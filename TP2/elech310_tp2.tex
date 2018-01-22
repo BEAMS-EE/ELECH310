@@ -1,0 +1,351 @@
+\documentclass[11pt,a4paper,dvipsnames]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[frenchb]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[french]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+%\input cyracc.def
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{babel}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[]{pdfpages}
+
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+
+\usepackage{askmaps}
+% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[]{xcolor}
+
+\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+
+%cyr
+\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+
+
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
+
+\newboolean{annexes}
+\setboolean{annexes}{true}%annexes
+%\setboolean{annexes}{false}% pas de annexes
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\newboolean{mos}
+%\setboolean{mos}{true}%annexes
+\setboolean{mos}{false}% pas de annexes
+
+\usepackage{aeguill} %guillemets
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] Électronique numérique\\ TP 2}
+\rhead{\mydate\today\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
+/Title (TP 2, ELEC-H-310)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={TP 2 [ELEC-H-310] Choucroute numérique},
+pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+\date{\vspace{-1.7cm}\mydate\today}
+\title{\vspace{-2cm} TP 2\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+
+\begin{document}
+\pagestyle{empty}
+\maketitle
+\vspace*{1cm}
+
+\textit{Note~:} On adopte la convention de notation suivante~: $\overline{ab} = \overline{a} \cdot \overline{b}$ et $\overline{(ab)} = \overline{a \cdot b} = \overline{a} + \overline{b}$
+\begin{Q}
+	Prouver, par comparaison des tables de vérité, l'égalité suivante~:
+	\[\overline{a}c + \overline{abc} = \overline{ab} + \overline{a}c\]
+	\label{Q:1}
+	\reponse{On s'en convainc en voyant que $F1 = F2$
+
+		\renewcommand{\arraystretch}{1.2}
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l|l|l|l|} \hline
+				$a$ & $b$ & $c$ & $\overline{a}c$ & $\overline{abc}$ & $F1$ & $\overline{ab}$ & $\overline{a}c$ & $F2$ \\ \hline
+				0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 1 \\ \hline
+				0 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 1 \\ \hline
+				0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+				0 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 1 \\ \hline
+				1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+				1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+				1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+				1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+			\end{tabular}
+		\end{center}
+	}%R
+\end{Q}
+
+
+\begin{Q}
+	Simplifier par manipulation algébrique les expressions suivantes~:
+
+	\begin{enumerate}
+		\item $(a+b) \cdot (a+\overline{b})$
+		\reponse{
+			\begin{align*}
+				(a+b) \cdot (a+\overline{b}) & = aa + a\overline{b} + ab + b\overline{b}\\
+				& = a + a\overline{b} + ab + 0 \\
+				& = a \cdot (1 + \overline{b} + b) \\
+				& = a
+			\end{align*}
+		}
+		\item $a+\overline{a}b$
+		\reponse{
+			\begin{align*}
+				a+\overline{a}b & = (a+\overline{a}) \cdot (a+b) \\
+				& = 1 \cdot (a+b) \\
+				& = a + b
+			\end{align*}
+		}
+		\item $\overline{ab}c + \overline{abc} + \overline{a}b\overline{c}$
+		\reponse{
+			\begin{align*}
+				\overline{ab}c + \overline{abc} + \overline{a}b\overline{c} & = \overline{ab} \cdot (c + \overline{c}) + \overline{a}b\overline{c} \\
+				& = \overline{ab} + \overline{a}b\overline{c} \\
+				& = \overline{a} \cdot (\overline{b} + b\overline{c}) \\
+				& = \overline{a} \cdot ((\overline{b} + b) \cdot (\overline{b} + \overline{c})) \\
+				& = \overline{a} \cdot ( 1 \cdot (\overline{b} + \overline{c})) \\
+				& = \overline{a} \cdot (\overline{b} + \overline{c})
+			\end{align*}
+		}
+		\item $\overline{((a+b)\overline{cd} + e + \overline{f})}$
+		\reponse{
+			\begin{align*}
+				\overline{((a+b) \cdot \overline{cd} + e + \overline{f})} & = (\overline{ab} + c + d) \cdot \overline{e}f\quad \mbox{(De Morgan)}
+			\end{align*}
+		}
+		\item $\overline{a}bc + a\overline{bc} + \overline{abc} + a\overline{b}c + abc$
+		\reponse{
+			\begin{align*}
+				\overline{a}bc + a\overline{bc} + \overline{abc} + a\overline{b}c + abc & = bc \cdot (a+\overline{a}) + a\overline{b}c + \overline{bc} \cdot (a+\overline{a}) \\
+				& = bc + a\overline{b}c + \overline{bc}
+			\end{align*}
+		}
+		\item $\overline{(ab + ac)} + \overline{ab}c$
+		\reponse{
+			\begin{align*}
+				\overline{(ab + ac)} + \overline{ab}c & = (\overline{a} + \overline{b}) \cdot (\overline{a} + \overline{c}) + \overline{ab}c \\
+				& = \overline{a} + \overline{ac} + \overline{ab} + \overline{bc} + \overline{ab}c \\
+				& = \overline{a} \cdot (1 + \overline{c} + \overline{b} + \overline{b}c) + \overline{bc} \\
+				& = \overline{a} + \overline{bc}
+			\end{align*}
+		}
+		\item $\overline{(a + b)}\ \overline{(\overline{a} + b)}$
+		\reponse{
+			\begin{align*}
+				\overline{(a + b)} \cdot \overline{(\overline{a} + b)} & = (\overline{ab}) \cdot (a\overline{b}) \\
+				& = \overline{a} \cdot a \cdot \overline{b} \\
+				& = 0
+			\end{align*}
+		}
+		\item $a + \overline{a}b + \overline{ab}$
+		\reponse{
+			\begin{align*}
+				a + \overline{a}b + \overline{ab} & = a + \overline{a} \cdot (b+\overline{b}) \\
+				& = a + \overline{a} \\
+				& = 1
+			\end{align*}
+		}
+	\end{enumerate}
+	\reponse{}%R
+\end{Q}
+
+
+\begin{Q}
+	Écrire les expressions logiques suivantes sous forme de minterms (forme disjonctive normale)~:
+	\begin{enumerate}
+		\item $F(a,b,c,d) = a\overline{b}c + \overline{ab} + ab\overline{c}d$
+		\reponse{
+			\begin{multline*}
+				a\overline{b}cd + a\overline{b}c\overline{d} + \overline{ab}cd + \overline{ab}c\overline{d} + \overline{abc}d + \overline{abcd} + ab\overline{c}d
+			\end{multline*}
+		}
+		\item $F(a,b,c,d) = ab + \overline{b}c + cd$
+		\reponse{
+			\begin{multline*}
+				% & abcd + abc\overline{d} + ab\overline{c}d + ab\overline{cd} + a\overline{b}cd + a\overline{b}c\overline{d} + \\
+				% & \overline{ab}cd + \overline{ab}c\overline{d} + abcd + a\overline{b}cd + \overline{a}bcd + \overline{ab}cd
+				abcd + abc\overline{d} + ab\overline{c}d + ab\overline{cd} + a\overline{b}cd + a\overline{b}c\overline{d} + \overline{ab}cd + \overline{ab}c\overline{d} + \overline{a}bcd
+			\end{multline*}
+		}
+		\item $F(a,b,c,d) = a + d$
+		\reponse{
+			\begin{multline*}
+				abcd + abc\overline{d} + ab\overline{c}d + ab\overline{cd} + a\overline{b}cd + a\overline{b}c\overline{d} + a\overline{bc}d + a\overline{bcd} + \overline{a}bcd + \overline{a}b\overline{c}d + \overline{ab}cd + \overline{abc}d
+			\end{multline*}
+		}
+	\end{enumerate}
+	\reponse{}%R
+\end{Q}
+
+
+\begin{Q}
+	Simplifier $F(a,b)$ à l'aide des K-maps (rappel~: afin de remplir la table de Karnaugh, on peut développer la fonction logique dans l'une de ses formes canoniques.)~:
+	\begin{enumerate}
+		\item $F(a,b) = a + \overline{a}b + \overline{ab}$
+		\reponse{
+			\begin{center}
+				\askmapii{$F=1$}{ab}{}{1111}{}
+			\end{center}
+		}
+		\item $F(a,b) = (a + b) \cdot (a + \overline{b})$
+		\reponse{
+			\begin{center}
+				\askmapii{$F=a$}{a{\raisebox{2ex}{\ \ b}}}{}{0011}{% raise Z input
+				\color{red}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				}
+			\end{center}
+		}
+		\item $F(a,b) = a + \overline{a}b$
+		\reponse{
+			\begin{center}
+				\askmapii{$F=a+b$}{a{\raisebox{2ex}{\ \ b}}}{}{0111}{% raise Z input
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(1.8,0.8){}}%
+				\color{green}\put(1.15,0.15){\dashbox{0.2}(0.7,1.7){}}%
+				}
+			\end{center}
+		}
+	\end{enumerate}
+	\reponse{}%R
+\end{Q}
+
+
+\begin{Q}
+	Simplifier $F(a,b,c)$ à l'aide des K-maps~:
+	\begin{enumerate}
+		\item $F(a,b,c) = \overline{a}c + \overline{abc}$
+		\reponse{%TODO Mettre les termes dans la même couleur que les cadres dans les K-maps.
+			\begin{center}
+				\askmapiii{$F=\overline{ab}+\overline{a}c$}{bca}{}{10100010}{% raise Z input
+				\color{red}\put(0.1,1.1){\dashbox{0.1}(1.8,0.8){}}%
+				\color{green}\put(1.15,1.15){\dashbox{0.2}(1.7,0.7){}}%
+				}
+			\end{center}
+		}
+		\item $F(a,b,c) = a\overline{b}c + \overline{a}b\overline{c} + \overline{a}bc + \overline{ab}c$
+		\reponse{
+			\begin{center}
+				\askmapiii{$F=\overline{a}b+\overline{b}c$}{bca}{}{00111010}{% raise Z input
+				\color{red}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{green}\put(2.1,1.1){\dashbox{0.2}(1.8,0.8){}}%
+				}
+			\end{center}
+		}
+		\item $F(a,b,c) = ab\overline{c} + \overline{abc} + \overline{a}b\overline{c} + a\overline{bc}$
+		\reponse{
+			\begin{center}
+				\askmapiii{$F=\overline{c}$}{bca}{}{11001100}{% raise Z input
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				}
+			\end{center}
+		}
+	\end{enumerate}
+	\reponse{}%
+\end{Q}
+
+
+\begin{Q}
+	Simplifier $F(a,b,c,d)$ à l'aide des K-maps~:
+	\begin{enumerate}
+		\item $F(a,b,c,d) = abd + acd + bcd + ab + \overline{a}cd + \overline{ab}cd$
+		\reponse{
+			\begin{center}
+				\askmapiv{$F=ab+cd$}{cdab}{}{0001000100011111}{% raise Z input
+				\color{red}\put(0.1,1.1){\dashbox{0.1}(3.8,0.8){}}%
+				\color{green}\put(2.1,0.1){\dashbox{0.2}(0.8,3.8){}}%
+				}
+			\end{center}
+		}
+		\item $F(a,b,c,d) = \overline{abcd} + \overline{ac}d + \overline{a}b\overline{c} + abc + a\overline{b}c + abcd$
+		\reponse{
+			\begin{center}
+				\askmapiv{$F=ac+\overline{ac}$}{cdab}{}{1100110000110011}{% raise Z input
+				\color{red}\put(0.1,2.1){\dashbox{0.1}(1.8,1.8){}}%
+				\color{green}\put(2.1,0.1){\dashbox{0.2}(1.8,1.8){}}%
+				}
+			\end{center}
+		}
+		\item $F(a,b,c,d) = \overline{bcd} + \overline{a}c\overline{d} + \overline{ac}d + a\overline{d} + \overline{a}b\overline{d}$
+		\reponse{
+			\begin{center}
+				\askmapiv{$F=\overline{d}+\overline{ac}$}{cdab}{}{1111110011110000}{% raise Z input
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,3.8){}}%
+				\color{green}\put(0.15,2.15){\dashbox{0.2}(1.7,1.7){}}%
+				\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,3.8){}}%
+				}
+			\end{center}
+		}
+	\end{enumerate}
+\end{Q}
+
+\begin{Q}
+	Simplifier $F(a,b,c,d,e)$ à l'aide des K-maps~:
+	\begin{enumerate}
+		\item $F(a,b,c,d,e) = a\overline{e} + b\overline{e} + a\overline{b}ce + a\overline{b}cde + a\overline{b}c\overline{e} + \overline{acde} + \overline{abe} + \overline{ab}ce$
+		\reponse{
+			\begin{center}
+				\askmapv{$F = \overline{e} + \overline{b}c$}{abcde}{}{10101111101010101010111110101010}{%
+				\color{red}\put(0.1,3.1){\dashbox{0.1}(7.8,0.8){}}%
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(7.8,0.8){}}%
+				\color{green}\put(1.1,0.2){\dashbox{0.2}(0.8,3.6){}}%
+				\color{green}\put(5.1,0.2){\dashbox{0.2}(0.8,3.6){}}%
+				}
+			\end{center}
+		}
+	\end{enumerate}
+\end{Q}
+
+\end{document}

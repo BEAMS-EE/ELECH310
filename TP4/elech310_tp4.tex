@@ -1,0 +1,532 @@
+\documentclass[11pt,a4paper,dvipsnames,]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[frenchb]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[french]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+%\input cyracc.def
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows,automata}
+\usetikzlibrary{babel}
+% \usetikzlibrary{circuits.logic.US,circuits.logic.IEC}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[]{pdfpages}
+
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+
+\usepackage{askmaps}
+% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[]{xcolor}
+\usepackage{colortbl}
+
+\usepackage{multirow}
+
+\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+
+%cyr
+\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+
+
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
+
+\newboolean{annexes}
+\setboolean{annexes}{true}%annexes
+%\setboolean{annexes}{false}% pas de annexes
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\newboolean{mos}
+%\setboolean{mos}{true}%annexes
+\setboolean{mos}{false}% pas de annexes
+
+\usepackage{aeguill} %guillemets
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] Électronique numérique\\ TP 4}
+\rhead{\mydate\today\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
+/Title (TP 4, ELEC-H-310)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={TP 4 [ELEC-H-310] Choucroute numérique},
+pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+\date{\vspace{-1.7cm}\mydate\today}
+\title{\vspace{-2cm} TP 4\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+
+\newlength{\gvs}% Gate Vertical Space
+\gvs=6em
+\newlength{\ghs}% Gate Horizontal Space
+\ghs=10em
+
+\begin{document}
+\pagestyle{empty}
+\maketitle
+\vspace*{1cm}
+
+\begin{Q}
+	Quelles sont les équations logiques correspondant à ce schéma~?
+	Dresser la table de Huffman et en déduire les graphes d'état.
+	\begin{enumerate}
+		\item ~\\
+		\begin{center}
+			\begin{circuitikz}[scale=0.7, every node/.style={scale=0.7}]
+			% \begin{circuitikz}
+				\draw
+				(0\ghs,0.5\gvs) node[not port] (mynot1) {}
+				(0\ghs,1.5\gvs) node[not port] (mynot2) {}
+				(0\ghs,2.5\gvs) node[not port] (mynot3) {}
+				(\ghs,0\gvs) node[and port] (myand1) {}
+				(\ghs,1\gvs) node[and port] (myand2) {}
+				(\ghs,2\gvs) node[and port] (myand3) {}
+				(\ghs,3\gvs) node[and port] (myand4) {}
+				(2\ghs,2.5\gvs) node[or port] (myor) {}
+
+				% NOT gates outputs
+				let
+				\p1=(mynot1.out),
+				\p2=(mynot2.out),
+				\p3=(mynot3.out),
+				\p4=(myand4.in 2),
+				\p5=(myand4.in 1),
+				\p6=(myand4.out)
+				in
+
+				(mynot1.out) -- (0.5\ghs,\y1) |- (myand3.in 2)
+				(mynot2.out) -- (0.45\ghs,\y2) |- ($(\x4,\y6)+(0.6em,0)$)% Size of a AND in/out pin: 0.6em.
+				(mynot3.out) -- (0.35\ghs,\y3) |- (myand2.in 1)
+
+				% NOT gates inputs
+				let
+				\p1=(mynot1.in),
+				\p2=(mynot2.in),
+				\p3=(mynot3.in),
+				\p4=(myand1.in 2),
+				\p5=(mynot2.in),
+				\p6=(mynot3.in)
+				in
+
+				% mynot1 input
+				(mynot1.in) |- (myand2.in 2)
+				(mynot1.in) -- +(-0.1\ghs,0)% Draw a 0.1\ghs line going left from the input of mynot1 (aesthetics)
+				(mynot1.in) to[short,-*] (\x1,\y4) to (myand1.in 2)
+				(myand2.out) -- +(0.3\ghs,0) |- ($(\x1,\y4)-(0,0.5\gvs)$) to (mynot1.in)
+
+				% mynot2 input
+				(mynot2.in) -- +(-0.2\ghs,0)
+				(mynot2.in) |- +(0.7\ghs,0.45\gvs) |- (myand3.in 1)
+
+				% mynot3 input
+				(mynot3.in) -- +(-0.2\ghs,0)
+				(mynot3.in) |- (myand4.in 1)
+
+				% AND gates outputs
+				let
+				\p1=(myand1.out),
+				\p2=(myor.out),
+				\p3=(mynot1.in),
+				\p4=(myand1.in 2),
+				\p5=(myand2.out)
+				in
+
+				(myand4.out) |- (myor.in 1)
+				(myand3.out) |- (myor.in 2)
+				(myand1.out) -- (\x2,\y1) node[anchor=south west] {\Large $Z$} -- +(0.2\ghs,0)
+
+				% Other
+				(myand4.in 2) -- +(-0.05\ghs,0) |- (myand1.in 1)
+				(myor.out) |- ($(\x3,\y4)-(0.2\ghs,0.7\gvs)$) |- ($(\x3,\y5)-(0.2\ghs,0)$) node[anchor=south west] {\Large $y_1$} -- ($(\x4,\y5)-(0.05\ghs,0)$) to[short, *-] ($(\x3,\y5)-(0.2\ghs,0)$) -- ($(\x4,\y5)+(0.5em,0)$)
+				;
+				% Labels
+				\draw (mynot3.in) node[anchor=south east] {\Large $a$};
+				\draw (mynot2.in) node[anchor=south east] {\Large $b$};
+				\draw (mynot1.in) node[anchor=north east] {\Large $y_2$};
+				\draw (myand2.out) node[anchor=south west] {\Large $Y_2$};
+				\draw (myor.out) node[anchor=south west] {\Large $Y_1$};
+
+				\fill (mynot1.in) circle [radius=2pt];
+				\fill (mynot2.in) circle [radius=2pt];
+				\fill (mynot3.in) circle [radius=2pt];
+			\end{circuitikz}
+		\end{center}
+		\reponse{
+			\begin{align*}
+				Y_1 & = a\overline{b}y_1 + b\overline{y_2} \\
+				Y_2 & = \overline{a}y_1y_2 \\
+				Z & = y_1y_2
+			\end{align*}
+
+			\begin{center}
+				\begin{tabular}{|c|c|c|c|c|c|} \hline
+				& \multicolumn{4}{c|}{$ab$} & \\ \hline
+				$Y_1Y_2$ & 00 & 01 & 11 & 10 & $Z$ \\ \hline
+				00 & 00 & 10 & 10 & 00 & 0 \\ \hline
+				01 & 00 & 00 & 00 & 00 & 0 \\ \hline
+				11 & 01 & 01 & 00 & 10 & 1 \\ \hline
+				10 & 00 & 10 & 10 & 10 & 0 \\ \hline
+				\end{tabular}
+			\end{center}
+
+			\begin{center}
+			\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.5cm,semithick,align=center]
+			  \tikzstyle{every state}=[fill=white,text=black]
+
+			  \node[state]         (A)              {$00$\\ Z=0};
+			  \node[state]         (B) [right of=A] {$01$\\ Z=0};
+			  \node[state]         (D) [below of=A] {$10$\\ Z=0};
+			  \node[state]         (C) [below of=B] {$11$\\ Z=1};
+
+			  \path (A) edge 			  node {01,11} (D)
+						edge [loop left]  node {00,10} (A)
+			        (B) edge [bend right] node {} (A)
+			        (C) edge [bend left]  node {10} (D)
+			        	edge [bend right] node {00, 01} (B)
+			        	edge 			  node {11} (A)
+			        (D) edge [loop left]  node {11,01, 10} (D)
+			            edge [bend left]  node {00} (A);
+
+			   \draw node[align=center] at (2.25,1) {00, 01, 11, 10};
+			\end{tikzpicture}
+			\end{center}
+		}
+
+		\item ~\\
+		\begin{center}
+			\begin{circuitikz}[scale=0.7, every node/.style={scale=0.7}]
+			% \begin{circuitikz}
+				\draw
+				(0.5\ghs,0.5\gvs) node[not port, rotate=90] (mynot1) {}
+				(1\ghs,0.5\gvs) node[not port, rotate=90] (mynot2) {}
+				(1.5\ghs,0.5\gvs) node[not port, rotate=90] (mynot3) {}
+				(2.3\ghs,2\gvs) node[and port] (myand1) {}
+				(2.3\ghs,2.8\gvs) node[and port] (myand2) {}
+				(2.3\ghs,3.6\gvs) node[and port] (myand3) {}
+				(2.3\ghs,4.4\gvs) node[and port] (myand4) {}
+				(2.3\ghs,5.2\gvs) node[and port] (myand5) {}
+				(0,5.8\gvs) node[shape=coordinate] (top) {}
+		
+				let \p1=(myand3.out), \p2=(myand5.out) in
+				(3.1\ghs,\y1) node[or port] (myor1) {}
+				(3.1\ghs,\y2) node[or port] (myor2) {}
+		
+		
+				% 'dot21' means first dot on second line from the left.
+				($(mynot1.in)-(0.2\ghs,0)$) node[shape=coordinate] (dot11) {}
+				(dot11 |- myand4.in 1) node[shape=coordinate] (dot12) {}
+				(mynot1.out |- myand3.in 1) node[shape=coordinate] (dot21) {}
+				(dot21 |- myand5.in 1) node[shape=coordinate] (dot22) {}
+				($(mynot2.in)-(0.2\ghs,0)$) node[shape=coordinate] (dot31) {}
+				(dot31 |- myand2.in 1) node[shape=coordinate] (dot32) {}
+				(dot31 |- myand3.in 2) node[shape=coordinate] (dot33) {}
+				($(dot31 |- myor2.in 1)+(0,0.3\gvs)$) node[shape=coordinate] (dot34) {}
+				(dot31 |- myand1.in 1) node[shape=coordinate] (dot31bis) {}
+				(mynot2.out |- myand1.in 1) node[shape=coordinate] (dot41) {}
+				($(mynot3.in)-(0.2\ghs,0)$) node[shape=coordinate] (dot51) {}
+				(dot51 |- myand1.in 2) node[shape=coordinate] (dot52) {}
+				(dot51 |- myand2.in 2) node[shape=coordinate] (dot53) {}
+				(dot51 |- myand5.in 2) node[shape=coordinate] (dot54) {}
+				(mynot3.out |- myand4.in 2) node[shape=coordinate] (dot61) {}
+				(dot61 |- myand1.in 2) node[shape=coordinate] (dot61bis) {}
+				($(myand5.out)+(0.2\ghs,0)$) node[shape=coordinate] (dotandor) {}% Between the AND and OR gates.
+				
+
+				% NOT 1
+				(mynot1.in) to [short, -*] (dot11)
+				(dot11) -- +(0,-0.4\gvs)
+				% Note on the syntax: '(dot11 |- top)' yields a pair of coordinates '(dot11.x, top.y)'. Neet.
+				% Obviously, '-|' does the opposite: '(top.x, dot11.y)'.
+				(dot11) to[short, -*] (dot12) to (dot11 |- top)
+				(dot12) -- (myand4.in 1)
+				(mynot1.out) to[short, -*] (dot21) to[short, -*] (dot22) to (dot22 |- top)
+				(dot22) -- (myand5.in 1)
+		
+				% NOT 2
+				(mynot2.in) to[short, -*] (dot31)
+				(dot31) to[short, -*] (dot32) to[short, -*] (dot33) to[short, -*] (dot34) -- (dot31 |- top)
+				(mynot2.out) -- (dot41) -- (mynot2.out |- top)
+		
+				% NOT 3
+				(mynot3.in) to[short, -*] (dot51) -- (dot52) to[short, -*] (dot53) to[short, -*] (dot54) -- (dot51 |- top)
+				(mynot3.out) to[short, -*] (dot61bis) -- (mynot3.out |- top)
+		
+				% ANDs
+				% (dot52) -- (myand1.in 2)
+				(dot61bis) -- (myand1.in 2)
+				% (dot41) -- (myand1.in 1)
+				(dot31bis) to [short, *-] (myand1.in 1)
+				(dot53) -- (myand2.in 2)
+				(dot32) -- (myand2.in 1)
+				(dot33) -- (myand3.in 2)
+				(dot21) -- (myand3.in 1)
+				(dot61) -- (myand4.in 2)
+				(dot12) -- (myand4.in 1)
+				(dot54) -- (myand5.in 2)
+				(dot22) -- (myand5.in 1)
+				(dot34) -| (myor2.in 1)
+				(myand5.out) to[short, -*] (dotandor) -- ($(myor2.in 1 |- myor2.out)+(1.2em,0)$)% 1.2 em: distance central pin-gate
+				(myand4.out) -| (myor2.in 2)
+				(dotandor) |- (myor1.in 1)
+				(myand3.out) -- ($(myor1.in 1 |- myor1.out)+(1.2em,0)$)
+				(myand2.out) -| (myor1.in 2)
+				(myand1.out) -| ($(myor2.out |- myand1.out)+(0.5\ghs,0)$) node[anchor=south west] {\Large $Z$}
+		
+				% ORs
+				(myor1.out) |- ($(dot51)-(0,0.2\gvs)$) -- (dot51)
+				(myor2.out) -- +(0.2\ghs,0) |- ($(dot31)-(0,0.4\gvs)$) -- (dot31)
+		
+				% Labels
+				(dot11) node[anchor=north east] {\Large $a$}
+				(dot31) node[anchor=north east] {\Large $y_1$}
+				(dot51) node[anchor=north east] {\Large $y_2$}
+				(myor2.out) node[anchor=south west] {\Large $Y_1$}
+				(myor1.out) node[anchor=south west] {\Large $Y_2$}
+				;
+			\end{circuitikz}
+		\end{center}
+		\reponse{
+			\begin{align*}
+				Y_1 & = y_1 + \overline{a}y_2 + a\overline{y_2}\\
+				Y_2 & = \overline{a}y_2 + \overline{a}y_1 + y_1y_2\\
+				Z & = y_1\overline{y_2}
+			\end{align*}
+
+			\begin{center}
+				\begin{tabular}{|c|c|c|c|c|c|} \hline
+				& \multicolumn{4}{c|}{$ab$} & \\ \hline
+				$Y_1Y_2$ & 00 & 01 & 11 & 10 & $Z$ \\ \hline
+				00 & 00 & 00 & 10 & 10 & 0 \\ \hline
+				01 & 11 & 11 & 00 & 00 & 0 \\ \hline
+				11 & 11 & 11 & 11 & 11 & 0 \\ \hline
+				10 & 11 & 11 & 10 & 10 & 1 \\ \hline
+				\end{tabular}
+			\end{center}
+
+			\begin{center}
+			\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.5cm,semithick,align=center]
+			  \tikzstyle{every state}=[fill=white,text=black]
+
+			  \node[state]         (A)              {$00$\\ Z=0};
+			  \node[state]         (B) [right of=A] {$01$\\ Z=0};
+			  \node[state]         (D) [below of=A] {$10$\\ Z=1};
+			  \node[state]         (C) [below of=B] {$11$\\ Z=0};
+
+			  \path (A) edge [bend right] node {10,11} (D)
+						edge [loop left]  node {00,01} (A)
+			        (B) edge [bend right] node {11,10} (A)
+			        	edge [bend left]  node {00, 01} (C)
+			        (C) edge [loop right]  node {00, 01, 11, 10} (D)
+			        (D) edge [loop left]  node {00, 01} (D)
+			            edge [bend right]  node {11, 10} (C);
+			\end{tikzpicture}
+			\end{center}
+		}
+	\end{enumerate}
+\end{Q}
+
+\begin{Q}
+	Un ouvre-porte est muni d'un code secret commandé par deux boutons poussoirs $a$ et $b$.
+	On considère que la variable liée à chaque bouton vaut 1 quand le bouton est enfoncé, et 0 quand il est relâché.
+	$Z_1$ est la sortie qui, si elle vaut 1, commande l'ouvre-porte.
+	Il n'est pas nécessaire que cette sortie reste à 1 pour qu'on puisse ouvrir la porte~; on peut imaginer qu'à l'instant où l'ouvre-porte est activé (lorsque le dernier bouton de la combinaison est enfoncé), la porte peut être librement ouverte pendant une courte période de temps.
+	Le code consiste à enfoncer et relâcher $a$ deux fois de suite, puis $b$, puis encore $a$.
+	Toute fausse manœuvre conduit à mettre la sortie $Z_2$ (alarme) à 1.
+	Cette dernière reste activée peu importe l'état des variables d'entrée et nécessite donc qu'on réinitialise le système.
+	Une fois le code entré, relâcher les deux boutons renvoie le système dans son état initial.
+
+	Établir le graphe d'état et la table de Huffman correspondant à ce problème.
+	\reponse{
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l|l|} \hline
+				& \multicolumn{4}{c}{$ab$} & & \\ \hline
+				& 00 & 01 & 11 & 10 & $Z_1$ & $Z_2$ \\ \hline
+				1 & \textbf{1} & 9 & 9 & 2 & 0 & 0 \\ \hline
+				2 & 3 & 9 & 9 & \textbf{2} & 0 & 0 \\ \hline
+				3 & \textbf{3} & 9 & 9 & 4 & 0 & 0 \\ \hline
+				4 & 5 & 9 & 9 & \textbf{4} & 0 & 0 \\ \hline
+				5 & \textbf{5} & 6 & 9 & 9 & 0 & 0 \\ \hline
+				6 & 7 & \textbf{6} & 9 & 9 & 0 & 0 \\ \hline
+				7 & \textbf{7} & 9 & 9 & 8 & 0 & 0 \\ \hline
+				8 & 1 & 9 & 9 & \textbf{8} & 1 & 0 \\ \hline
+				9 & \textbf{9} & \textbf{9} & \textbf{9} & \textbf{9} & 0 & 1 \\ \hline
+			\end{tabular}
+		\end{center}
+
+		\begin{center}
+		\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=4.5cm,semithick,align=center]
+		  \tikzstyle{every state}=[fill=white,text=black]
+
+		  \node[state]         (A)              {$1$};
+		  \node[state]         (B) [right of=A] {$2$};
+		  \node[state]         (C) [right of=B] {$3$};
+		  \node[state]         (D) [below of=C] {$4$};
+		  \node[state]         (E) [below of=D] {$5$};
+		  \node[state]         (F) [left of=E] 	{$6$};
+		  \node[state]         (G) [left of=F] 	{$7$};
+		  \node[state]         (H) [above of=G] {$8$};
+		  \node[state]         (I) [right of=H] {$9$};
+
+		  \path	(A)	edge	[loop left]		node	{00}		(A)
+		  			edge	[bend left]		node	{$ab = $10}		(B)
+		  			edge					node	{11, 10}	(I)
+		  		(B)	edge	[loop above]	node	{10}		(B)
+		  			edge	[bend left]		node	{00}		(C)
+		  			edge					node	{11, 01}	(I)
+		  		(C)	edge	[loop right]	node	{00}		(C)
+		  			edge	[bend left]		node	{10}		(D)
+		  			edge					node	{11, 01}	(I)
+		  		(D)	edge	[loop right]	node	{10}		(D)
+		  			edge	[bend left]		node	{00}		(E)
+		  			edge					node	{11,01}		(I)
+		  		(E)	edge	[loop right]	node	{00}		(E)
+		  			edge	[bend left]		node	{01}		(F)
+		  			edge					node	{11, 10}	(I)
+		  		(F)	edge	[loop below]	node	{01}		(F)
+		  			edge	[bend left]		node	{00}		(G)
+		  			edge					node	{11, 10}	(I)
+		  		(G)	edge	[loop left]		node	{00}		(G)
+		  			edge	[bend left]		node	{10}		(H)
+		  			edge					node	{11, 01}	(I)
+		  		(H)	edge	[loop left]		node	{10}		(H)
+		  			edge	[bend left]		node	{00}		(A)
+		  			edge					node	{11, 01}	(I);
+		  % \path (A) edge 			  node {01,11} (D)
+				% 	edge [loop left]  node {00,10} (A)
+		  %       (B) edge [bend right] node {} (A)
+		  %       (C) edge [bend left]  node {10} (D)
+		  %       	edge [bend right] node {00, 01} (B)
+		  %       	edge 			  node {11} (A)
+		  %       (D) edge [loop left]  node {11,01, 10} (D)
+		  %           edge [bend left]  node {00} (A);
+
+		  %  \draw node[align=center] at (2.25,1) {00, 01, 11, 10};
+		\end{tikzpicture}
+		\end{center}
+
+		Notez que lorsque l'on se trouve sur l'état \texttt{9}, l'état est stable pour toute les entrées. Afin de ne pas surcharger le graphe, les rétroactions sur l'état \texttt{9} ont donc été omises.
+	}
+\end{Q}
+
+% \begin{Q}
+% 	Construire la table des conditions d'équivalence pour la table de Huffman suivante.
+% 	\begin{center}
+% 		\begin{tabular}{|l|l|l|l|l|l|} \hline
+% 			& \multicolumn{4}{c}{$ab$} & \\ \hline
+% 			1 & \textbf{1} & 2 & 3 & 10 & 00 \\ \hline
+% 			2 & 7 & \textbf{2} & 9 & 4 & 11 \\ \hline
+% 			3 & 7 & 6 & \textbf{3} & 4 & 10 \\ \hline
+% 			4 & 7 & 2 & 5 & \textbf{4} & 01 \\ \hline
+% 			5 & 11 & 8 & \textbf{5} & 12 & 10 \\ \hline
+% 			6 & 11 & \textbf{6} & 5 & 10 & 11 \\ \hline
+% 			7 & \textbf{7} & 8 & 5 & 4 & 00 \\ \hline
+% 			8 & 1 & \textbf{8} & 3 & 4 & 11 \\ \hline
+% 			9 & 7 & 8 & \textbf{9} & 12 & 10 \\ \hline
+% 			10 & 11 & 6 & 9 & \textbf{10} & 01 \\ \hline
+% 			11 & \textbf{11} & 8 & 9 & 10 & 00 \\ \hline
+% 			12 & 7 & 2 & 5 & \textbf{12} & 11 \\ \hline
+% 		\end{tabular}
+% 	\end{center}
+% 	\reponse{
+% 		\begin{center}
+% 			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline%\cellcolor{green!25}
+% 				2 & x &  &  &  &  &  &  &  &  &  & \\ \hline
+% 				3 & x & x &  &  &  &  &  &  &  &  & \\ \hline
+% 				4 & x & x & x &  &  &  &  &  &  &  & \\ \hline
+% 				\multirow{3}{*}{5} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{red!25}7-11; & \multirow{3}{*}{x} &  &  &  &  &  &  & \\
+% 				 &  &  & \cellcolor{red!25}6-8; &  &  &  &  &  &  &  & \\
+% 				 &  &  & \cellcolor{red!25}4-12 &  &  &  &  &  &  &  & \\ \hline
+% 				% 5 & x & x & \cellcolor{red!25}7-11;\\6-8; & x &  &  &  &  &  &  & \\ \hline
+% 				\multirow{3}{*}{6} & \multirow{3}{*}{x} & \cellcolor{green!25}7-11; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} &  &  &  &  &  & \\
+% 				 &  & \cellcolor{green!25}5-9; &  &  &  &  &  &  &  &  & \\
+% 				 &  & \cellcolor{green!25}4-10 &  &  &  &  &  &  &  &  & \\ \hline
+% 				\multirow{3}{*}{7} & \cellcolor{red!25}2-8; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} &  &  &  &  & \\
+% 				 & \cellcolor{red!25}4-10 &  & & &  &  &  &  &  &  & \\
+% 				 & \cellcolor{red!25} & & & &  &  &  &  &  &  & \\ \hline
+% 				\multirow{3}{*}{8} & \multirow{3}{*}{x}  & \cellcolor{red!25}1-7; & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \cellcolor{red!25}7-11; & \multirow{3}{*}{x}  &  &  &  & \\
+% 				& x & \cellcolor{red!25}3-9 & & & & \cellcolor{red!25}3-5; & &  &  &  & \\
+% 				& x & \cellcolor{red!25} & & & & \cellcolor{red!25}4-10 & &  &  &  & \\ \hline
+% 				\multirow{2}{*}{9} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{red!25}6-8; & \multirow{2}{*}{x} & \cellcolor{green!25}7-11; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} &  &  & \\
+% 				 &  &  & \cellcolor{red!25}4-12 &  & \cellcolor{green!25} &  &  &  &  &  & \\ \hline
+% 				10 & x & x & x & \cellcolor{green!25}7-11; & x & x & x & x & x &  & \\ \hline
+% 				\multirow{2}{*}{11} & \cellcolor{red!25}2-8; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{green!25}5-9; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \\
+% 				 & \cellcolor{red!25}3-9 &  &  &  &  &  & \cellcolor{green!25}4-10; &  &  &  & \\ \hline
+% 				12 & \multirow{4}{*}{x} & \cellcolor{red!25}5-9; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \cellcolor{red!25}11-7; & \multirow{4}{*}{x} & \cellcolor{red!25}1-7; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} \\
+% 				 &  & \cellcolor{red!25}4-12 &  &  &  & \cellcolor{red!25}10-12; &  & \cellcolor{red!25}2-8; &  &  &  \\
+% 				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25}2-6 &  & \cellcolor{red!25}3-5; &  &  &  \\
+% 				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25} &  & \cellcolor{red!25}4-12 &  &  &  \\ \hline
+% 				 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline
+% 			\end{tabular}
+% 		\end{center}
+% 	}
+% \end{Q}
+\begin{Q}
+Utiliser une K-map pour simplifier l'équation suivante :\\
+$f(a,b,c,d,e)=\sum_{m}(0,2,5,7,8,9,10,11,13,23,26,27,29)+\sum_{d}(3,12,15,18,19,21,22,31)$
+	\reponse{
+		\begin{center}
+			\askmapv{$F = \overline{ace} + ce + \overline{a}b\overline{c} + \overline{c}d$}{abcde}{}{101-01011111-10-00--0--10011010-}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,0.8){}}%
+			\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,0.8){}}%
+			\color{red}\put(0.1,3.1){\dashbox{0.1}(0.8,0.8){}}%
+			\color{red}\put(3.1,3.1){\dashbox{0.1}(0.8,0.8){}}%
+			\color{green}\put(1.1,1.1){\dashbox{0.2}(1.8,1.8){}}%
+			\color{green}\put(5.1,1.1){\dashbox{0.2}(1.8,1.8){}}%
+			\color{blue}\put(3.2,0.2){\dashbox{0.3}(0.6,3.6){}}%
+			\color{orange}\put(0.3,0.3){\dashbox{0.2}(0.4,1.6){}}%
+			\color{orange}\put(3.3,0.3){\dashbox{0.2}(0.4,1.6){}}%
+			\color{orange}\put(4.3,0.3){\dashbox{0.2}(0.4,1.6){}}%
+			\color{orange}\put(7.3,0.3){\dashbox{0.2}(0.4,1.6){}}%
+			}
+		\end{center}
+	}
+
+\end{Q}
+
+\end{document}

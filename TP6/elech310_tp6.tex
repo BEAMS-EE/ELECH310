@@ -1,0 +1,706 @@
+\documentclass[11pt,a4paper,dvipsnames,]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[frenchb]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[french]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+%\input cyracc.def
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{babel}
+% \usetikzlibrary{circuits.logic.US,circuits.logic.IEC}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[]{pdfpages}
+
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+
+\usepackage{askmaps}
+% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[]{xcolor}
+\usepackage{colortbl}
+
+\usepackage{multirow}
+
+\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+
+%cyr
+\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+
+
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
+
+\newboolean{annexes}
+\setboolean{annexes}{true}%annexes
+%\setboolean{annexes}{false}% pas de annexes
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\newboolean{mos}
+%\setboolean{mos}{true}%annexes
+\setboolean{mos}{false}% pas de annexes
+
+\usepackage{aeguill} %guillemets
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] Électronique numérique\\ TP 6}
+\rhead{\mydate\today\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
+/Title (TP 6, ELEC-H-310)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={TP 6 [ELEC-H-310] Choucroute numérique},
+pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2016 ULB -- BEAMS  },
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+\date{\vspace{-1.7cm}\mydate\today}
+\title{\vspace{-2cm} TP 6\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+
+\newlength{\gvs}% Gate Vertical Space
+\gvs=6em
+\newlength{\ghs}% Gate Horizontal Space
+\ghs=10em
+
+\begin{document}
+\pagestyle{empty}
+\maketitle
+\vspace*{1cm}
+
+\begin{Q}
+	Construire la table des conditions d'équivalence pour la table de Huffman suivante (représentant une machine de Moore).
+	\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l|} \hline
+			& \multicolumn{4}{c|}{$ab$} & $Z_1Z_2$ \\ \hline
+			1 & \textbf{1} & 2 & 3 & 10 & 00 \\ \hline
+			2 & 7 & \textbf{2} & 9 & 4 & 11 \\ \hline
+			3 & 7 & 6 & \textbf{3} & 4 & 10 \\ \hline
+			4 & 7 & 2 & 5 & \textbf{4} & 01 \\ \hline
+			5 & 11 & 8 & \textbf{5} & 12 & 10 \\ \hline
+			6 & 11 & \textbf{6} & 5 & 10 & 11 \\ \hline
+			7 & \textbf{7} & 8 & 5 & 4 & 00 \\ \hline
+			8 & 1 & \textbf{8} & 3 & 4 & 11 \\ \hline
+			9 & 7 & 8 & \textbf{9} & 12 & 10 \\ \hline
+			10 & 11 & 6 & 9 & \textbf{10} & 01 \\ \hline
+			11 & \textbf{11} & 8 & 9 & 10 & 00 \\ \hline
+			12 & 7 & 2 & 5 & \textbf{12} & 11 \\ \hline
+		\end{tabular}
+	\end{center}
+	\reponse{
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline%\cellcolor{green!25}
+				2 & x & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\ \hline
+				3 & x & x & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\ \hline
+				4 & x & x & x & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\ \hline
+				\multirow{3}{*}{5} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{red!25}7-11; & \multirow{3}{*}{x} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  &  & \cellcolor{red!25}6-8; &  & \cellcolor{gray!20} &  \cellcolor{gray!20}&  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  &  & \cellcolor{red!25}4-12 &  & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\ \hline
+				% 5 & x & x & \cellcolor{red!25}7-11;\\6-8; & x &  &  &  &  &  &  & \\ \hline
+				\multirow{3}{*}{6} & \multirow{3}{*}{x} & \cellcolor{green!25}7-11; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  & \cellcolor{green!25}5-9; &  &  &  & \cellcolor{gray!20} &  \cellcolor{gray!20}&  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  & \cellcolor{green!25}4-10 &  &  &  & \cellcolor{gray!20} & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20} &\cellcolor{gray!20}\\ \hline
+				\multirow{3}{*}{7} & \cellcolor{red!25}2-8; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{gray!20} &  \cellcolor{gray!20}&  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 & \cellcolor{red!25}4-10 &  & & &  &  & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 & \cellcolor{red!25}3-5 & & & &  &  & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20} &\cellcolor{gray!20} \\ \hline
+				\multirow{3}{*}{8} & \multirow{3}{*}{x}  & \cellcolor{red!25}1-7; & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \cellcolor{red!25}7-11; & \multirow{3}{*}{x}  & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				& x & \cellcolor{red!25}3-9 & & & & \cellcolor{red!25}3-5; & & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				&  & \cellcolor{red!25} & & & & \cellcolor{red!25}4-10 & &  \cellcolor{gray!20}& \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20}\\ \hline
+				\multirow{2}{*}{9} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{red!25}6-8; & \multirow{2}{*}{x} & \cellcolor{green!25}7-11; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20}\\
+				 &  &  & \cellcolor{red!25}4-12 &  & \cellcolor{green!25} &  &  &  &  \cellcolor{gray!20}&  \cellcolor{gray!20}&\cellcolor{gray!20}\\ \hline
+				\multirow{3}{*}{10} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{green!25}7-11; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  &  &  & \cellcolor{green!25}5-9; &  &  &  &  &  & \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				 &  &  &  & \cellcolor{green!25}2-6; &  &  &  &  &  & \cellcolor{gray!20} & \cellcolor{gray!20}\\ \hline
+				\multirow{2}{*}{11} & \cellcolor{red!25}2-8; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{green!25}5-9; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{gray!20}\\
+				 & \cellcolor{red!25}3-9 &  &  &  &  &  & \cellcolor{green!25}4-10; &  &  &  & \cellcolor{gray!20}\\ \hline
+				12 & \multirow{4}{*}{x} & \cellcolor{red!25}5-9; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \cellcolor{red!25}11-7; & \multirow{4}{*}{x} & \cellcolor{red!25}1-7; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} \\
+				 &  & \cellcolor{red!25}4-12 &  &  &  & \cellcolor{red!25}10-12; &  & \cellcolor{red!25}2-8; &  &  &  \\
+				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25}2-6 &  & \cellcolor{red!25}3-5; &  &  &  \\
+				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25} &  & \cellcolor{red!25}4-12 &  &  &  \\ \hline
+				 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline
+			\end{tabular}
+		\end{center}
+	}
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+	Si on permet ou non l'équivalence de lignes dont la sortie est différente, montrer les deux automates différents (équations logiques et logigrammes) auxquels on parviendrait dans le cas de la table non complètement réduite suivante~:
+
+	\begin{center}
+
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+	\hline
+	$Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & ab & Z \\ \hline
+	1           & \textbf{1} & 2          & 3          & 4          &    & 0 \\ \cline{1-5} \cline{7-7}
+	2           & -          & \textbf{2} & \textbf{2} & \textbf{2} &    & 1 \\ \cline{1-5} \cline{7-7}
+	3           & 1          & 2          & \textbf{3} & -          &    & 1 \\ \cline{1-5} \cline{7-7}
+	4           & \textbf{4} & -          & 2          & \textbf{4} &    & 1 \\ \cline{1-5} \cline{7-7}
+	\end{tabular}
+
+	\end{center}
+
+	Comment appelle-t-on ces deux types de machines ?
+
+\reponse{
+	\begin{enumerate}
+		\item Si on ne permet pas l'équivalence des états dont la sortie est différente, on est dans le cas d'une machine de Moore.
+
+		La table d'équivalence correspondante est donc~:
+		\begin{center}
+			\begin{tabular}{cccc} \cline{1-2}
+				\multicolumn{1}{|c|}{2}	& 						\multicolumn{1}{c|}{\cellcolor{red!25}x} 					& 																	& \\ \cline{1-3}
+				\multicolumn{1}{|c|}{3}	& 						\multicolumn{1}{c|}{\cellcolor{red!25}x} 					& \multicolumn{1}{c|}{\cellcolor{green!25}OK}						& \\ \cline{1-4}
+				\multicolumn{1}{|c|}{\multirow{2}{*}{4}} & 		\multicolumn{1}{c|}{\cellcolor{red!25}}						& \multicolumn{1}{c|}{\cellcolor{green!25}} 						& \multicolumn{1}{c|}{\cellcolor{red!25}2-3}\\
+				\multicolumn{1}{|c|}{} & 						\multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor{red!25}x}} & \multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor{green!25}OK}} 	& \multicolumn{1}{c|}{\cellcolor{red!25}1-4} \\ \cline{1-4}
+			 & 													\multicolumn{1}{|c|}{1} & 									  \multicolumn{1}{c|}{2} 											& \multicolumn{1}{c|}{3} \\ \cline{2-4}
+			\end{tabular}
+		\end{center}
+
+		On peut choisir de fusionner les états 2 et 3, ou les états 2 et 4.
+		Si on choisit de fusionner les états 2 et 3, on obtient la table de Huffman réduite suivante~:
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l|l|}
+			\hline
+			$Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & ab & Z \\ \hline
+			1           & \textbf{1} & 2          & 2          & 4          &    & 0 \\ \cline{1-5} \cline{7-7}
+			2           & 1          & \textbf{2} & \textbf{2} & \textbf{2} &    & 1 \\ \cline{1-5} \cline{7-7}
+			4           & \textbf{4} & -          & 2          & \textbf{4} &    & 1 \\ \cline{1-5} \cline{7-7}
+			\end{tabular}
+		\end{center}
+
+		Il faut ensuite choisir un système de codage pour les états afin d'en déduire les fonctions logiques.
+		Prenons $1$, $2$ et $4$ codés respectivement $00$, $01$ et $11$\footnote{Puisque le code $10$ n'est pas utilisé, cet état n'existe pas et toutes ses valeurs sont remplacées par des \textit{don't care}.}.
+		On obtient alors la même table de Huffman de laquelle on peut déduire des k-maps et les fonctions logiques du système.
+
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l|l|}
+			\hline
+			$Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & ab & Z \\ \hline
+			00           & \textbf{00} & 01          & 01          & 11          &    & 0 \\ \cline{1-5} \cline{7-7}
+			01           & 00          & \textbf{01} & \textbf{01} & \textbf{01} &    & 1 \\ \cline{1-5} \cline{7-7}
+			11           & \textbf{11} & -          & 01          & \textbf{11} &    & 1 \\ \cline{1-5} \cline{7-7}
+			10           & -           & -          & -           & -           &    & - \\ \cline{1-5} \cline{7-7}
+			\end{tabular}
+
+			\askmapiv{$Y_1 = y_1\overline{b} + \overline{y_2}a\overline{b}$}{a b $y_1$ $y_2$}{}{00-100--10-100-0}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.3}(0.8,1.8){}}%
+			\color{red}\put(3.1,0.1){\dashbox{0.3}(0.8,1.8){}}%
+			\color{blue}\put(3.2,3.2){\dashbox{0.1}(0.6,0.6){}}%
+			\color{blue}\put(3.2,0.2){\dashbox{0.1}(0.6,0.6){}}%
+			}
+
+			\askmapiv{$Y_2 = y_1 + a + b$}{a b $y_1$ $y_2$}{}{00-111--11-111-1}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.3}(3.8,1.8){}}%
+			\color{green}\put(1.1,0.2){\dashbox{0.2}(1.8,3.7){}}%
+			\color{blue}\put(2.1,0.3){\dashbox{0.1}(1.7,3.5){}}%
+			}
+
+			\askmapiv{$Z = y_2$}{a b $y_1$ $y_2$}{}{0--1-1---1-1-1-1}{%
+			\color{red}\put(0.1,1.1){\dashbox{0.1}(3.8,1.8){}}%
+			}
+		\end{center}
+
+		\item Si on permet l'équivalence des états dont la sortie est différente, on est dans le cas d'une machine de Mealy.
+		Cependant, une restriction reste toujours de mise~: la fusion d'états futurs stables dont la sortie est différente est interdite.
+		Considérons par exemple les états $1$ et $4$. Pour l'entrée $ab = 00$, les deux états futurs (respectivement $1$ et $4$) sont stables et leur sortie vaut respectivement $0$ et $1$, empêchant la fusion de ces deux états.
+		Par contre, si l'on considère les états $2$ et $3$ pour les entrées $ab = 11$, les deux états futurs sont stables, mais ayant la même sortie, la fusion est potentiellement possible.
+
+		Forts de ces considérations, nous pouvons dresser la table d'équivalence suivante~:
+		\begin{center}
+			\begin{tabular}{cccc} \cline{1-2}
+				\multicolumn{1}{|c|}{\multirow{2}{*}{2}}	&	\multicolumn{1}{c|}{\cellcolor{green!25}2-3} 					& 																	& \\
+				\multicolumn{1}{|c|}{}						&	\multicolumn{1}{c|}{\cellcolor{green!25}2-4}					& 																	& \\ \cline{1-3}
+				\multicolumn{1}{|c|}{3}	& 						\multicolumn{1}{c|}{\cellcolor{green!25}OK}						& \multicolumn{1}{c|}{\cellcolor{green!25} OK}						& \\ \cline{1-4}
+				\multicolumn{1}{|c|}{\multirow{2}{*}{4}} & 		\multicolumn{1}{c|}{\cellcolor{red!25}}							& \multicolumn{1}{|c|}{\cellcolor{green!25}} 						& \multicolumn{1}{c|}{\cellcolor{red!25}2-3}\\
+				\multicolumn{1}{|c|}{} & 						\multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor{red!25}x}} 	& \multicolumn{1}{|c|}{\multirow{-2}{*}{\cellcolor{green!25}OK}} 	& \multicolumn{1}{c|}{\cellcolor{red!25}1-4} \\ \cline{1-4}
+			 & 													\multicolumn{1}{|c|}{1} & 										\multicolumn{1}{c|}{2} 											& \multicolumn{1}{c|}{3} \\ \cline{2-4}
+			\end{tabular}
+		\end{center}
+
+		Fusionnons les états $1$ et $3$ dans l'état $1$, et les états $2$ et $4$ dans l'état $2$~:
+		\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		$Y$ & 00         & 01         & 11         & 10         & ab & Z \\ \hline
+		1           & \textbf{1} & 2          & \textbf{1}          & 2          &    & ? \\ \cline{1-5} \cline{7-7}
+		2           & \textbf{2}          & \textbf{2} & \textbf{2} & \textbf{2} &    & ? \\ \cline{1-5} \cline{7-7}
+		\end{tabular}
+		\end{center}
+
+		La sortie dépendant maintenant de l'état ainsi que des entrées, définir une sortie pour l'état tout entier n'a plus de sens.
+		Nous allons donc assigner une sortie pour chaque état futur.
+		Les états futurs fusionnés comportant au moins un état stable récupèrent la valeur de la sortie de l'état stable en question\footnote{On voit ici pourquoi fusionner deux états futurs stables ayant des sorties différentes est interdit~; on ne saurait pas la sortie de quel état stable récupérer.}.
+		Par exemple, lors de la fusion des états $1$ et $3$ pour les entrées $ab = 00$, nous avons fusionné un état futur «~$1$~» stable dont la sortie valait $1$ avec un état instable «~$1$~» dont la sortie valait $0$.
+		La sortie de l'état futur fusionné vaut donc $1$.
+
+		La sortie des états futurs résultant de la fusion d'états futurs instables est déterminée de sorte à éviter les aléas, comme nous l'avons déjà fait dans les séances précédentes.
+		Par exemple, la transition de l'état $1$ vers l'état $2$ lorsque les entrées $ab$ passent de $11$ à $01$ conserve la même sortie~: $1$.
+		La sortie de la transition est donc aussi fixée à $1$ afin d'éviter un \textit{glitch}. La table~\ref{tab:sortie-transition} reprend les règles à observer dans de pareilles situations.
+		\begin{table}[H]
+			\centering
+			\begin{tabular}{ccc}
+			$Z_p$ & $Z_f$ & $Z_t$ \\ \hline
+			0 & 0 & 0 \\
+			0 & 1 & - \\
+			1 & 0 & - \\
+			1 & 1 & 1 \\
+			\end{tabular}
+			\caption{Valeur de la sortie lors de la transition entre états, avec $Z_p$ la sortie de l'état présent, $Z_f$ la sortie de l'état futur et $Z_t$ la sortie de la transition.}
+			\label{tab:sortie-transition}
+		\end{table}
+
+
+		On obtient alors la table de Huffman réduite suivante pour la machine de Mealy~:
+
+		\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l}
+		\hline
+		$Y$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+		1           & \textbf{1/0} & 2/1          & \textbf{1/1}          & 2/1          &  \\ \cline{1-5}
+		2           & \textbf{2/1}          & \textbf{2/1} & \textbf{2/1} & \textbf{2/1} &  \\ \cline{1-5}
+		\end{tabular}
+		\end{center}
+
+		En codant l'état $1$ par $0$ et l'état $2$ par $1$, on peut obtenir les k-maps et fonctions logiques suivantes~:
+		\begin{center}
+		\askmapiii{$Y = y + \overline{a}b + a\overline{b}$}{a b y}{}{01111101}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.2}(3.8,0.8){}}%
+			\color{blue}\put(1.1,0.2){\dashbox{0.1}(0.8,1.7){}}%
+			\color{green}\put(3.1,0.2){\dashbox{0.1}(0.7,1.7){}}%
+			}
+
+		\askmapiii{$Z = y + a + b$}{a b y}{}{01111111}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.2}(3.8,0.8){}}%
+			\color{blue}\put(1.1,0.2){\dashbox{0.1}(1.8,1.7){}}%
+			\color{green}\put(2.1,0.3){\dashbox{0.1}(1.6,1.5){}}%
+			}
+		\end{center}
+
+
+
+	\end{enumerate}
+}
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+	Dans la table des états d'Huffmann suivante:
+	\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l}
+		\hline
+		 $Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+		1 & \textbf{1} & \textbf{1} & 3          & -          &    \\ \cline{1-5}
+		2 & \textbf{2} & \textbf{2} & 3          & 4          &    \\ \cline{1-5}
+		3 & 2          & 1          & \textbf{3} & \textbf{3} &    \\ \cline{1-5}
+		4 & 1          & -          & \textbf{4} & \textbf{4} &    \\ \cline{1-5}
+		\end{tabular}
+
+	\end{center}
+
+	\begin{enumerate}
+		\item Trouver un codage n'offrant pas de problèmes de course. Déterminer les fonctions de
+		rétroaction $Y_1$ et $Y_2$.
+
+		\reponse{
+			Un problème de course survient lorsque la machine doit passer dans un nouvel état dans lequel plus d'une fonction de rétroaction change.
+			Par exemple, lorsque l'on passe de l'état $00$ à l'état $11$, $y_1$ et $y_2$ changent de valeur.
+			Or, il se peut que l'un des deux signaux soit plus lent que l'autre, entraînant une transition vers un état non désiré.
+
+			Pour éviter ces problèmes, il suffit parfois de choisir un codage des états approprié.
+			Dans notre cas, si l'on choisit de coder l'état $1$ par $00$, il faut obligatoirement coder l'état $3$ par un codage ayant une distance de Hamming de 1 à cause de la transition $1 \rightarrow 3$.
+			Choisissons de coder $3$ par $01$.
+
+			En suivant la même réflexion pour les deux autres états, on peut trouver la table de Huffman codée suivante~:
+
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|l}
+				\hline
+				 $Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00 & \textbf{00} & \textbf{00} & 01          & -          &    \\ \cline{1-5}
+				11 & \textbf{11} & \textbf{11} & 01          & 10          &    \\ \cline{1-5}
+				01 & 11          & 00          & \textbf{01} & \textbf{01} &    \\ \cline{1-5}
+				10 & 00         & -          & \textbf{10} & \textbf{10} &    \\ \cline{1-5}
+				\end{tabular}
+			\end{center}
+
+			Attention~: lors de l'établissement des k-maps, il faut veiller à réordonner la table pour respecter une distance de Hamming de 1 entre les cases voisines.
+
+			\begin{center}
+				\askmapiv{$Y_1 = y_2\overline{ab} + y_1\overline{a}b + y_1\overline{y_2}a + y_1a\overline{b}$}{a b $y_1$ $y_2$}{}{010100-1-0110010}{%
+				\color{red}\put(0.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{green}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{blue}\put(2.1,0.1){\dashbox{0.1}(1.8,0.8){}}%
+				\color{orange}\put(3.1,0.2){\dashbox{0.2}(0.7,1.7){}}%
+				}
+
+				\askmapiv{$Y_2 = y_2\overline{ab} + y_1\overline{a}b + y_2ab + \overline{y_1}a$}{a b $y_1$ $y_2$}{}{010100-1-1001101}{%
+				\color{red}\put(0.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{green}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{blue}\put(2.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{orange}\put(2.2,2.1){\dashbox{0.2}(1.7,1.8){}}%
+				}
+			\end{center}
+
+
+		}
+		\item Résoudre les problèmes de course critique si le codage : $1 = 00$; $2 = 01$; $3 = 11$; $4 = 10$; est
+		imposé. Donner les expressions des nouveaux $Y_1$ et $Y_2$.
+
+		\reponse{
+			En appliquant le codage imposé, on obtient la table de Huffman suivante~:
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|l}
+				\hline
+				 $Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00 & \textbf{00} & \textbf{00} & 11          & -          &    \\ \cline{1-5}
+				01 & \textbf{01} & \textbf{01} & 11          & 10          &    \\ \cline{1-5}
+				11 & 01          & 00          & \textbf{11} & \textbf{11} &    \\ \cline{1-5}
+				10 & 00          & -          & \textbf{10} & \textbf{10} &    \\ \cline{1-5}
+				\end{tabular}
+			\end{center}
+
+			Nous avons maintenant plusieurs problèmes de course, par exemple lorsque l'on se trouve dans l'état $00$ avec les entrées $01$ et que ces dernières passent à $11$, la machine nous envoie à l'état $11$, faisant donc changer les deux variables de rétroaction simultanément.
+			Nous pouvons répertorier tous les problèmes de course~:
+			\begin{enumerate}
+				\item Transition de l'état $00$ à l'état $11$ lorsque les entrées passent de $01$ à $11$.
+				\item Transition de l'état $01$ à l'état $10$ lorsque les entrées passent de $00$ à $10$.
+				\item Transition de l'état $11$ à l'état $00$ lorsque les entrées passent de $11$ à $01$.
+			\end{enumerate}
+
+			Puisque le codage est imposé, nous allons utiliser les \textit{don't care} et les états instables pour régler ces problèmes en effectuant des transitions intermédiaires.
+			En illustrant avec des tables de Huffman partielles~:
+			\begin{enumerate}
+				\item 
+				% \begin{center}
+					\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 01 & 11 \\ \hline
+					00 & \textbf{00} & 11 \\ \hline
+					01 & \textbf{01} & 11 \\ \hline
+					11 & 00 & \textbf{11} \\ \hline
+					\end{tabular}
+					devient
+					\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 01 & 11 \\ \hline
+					00 & \textbf{00} & \color{red}{01} \\ \hline
+					01 & \textbf{01} & 11 \\ \hline
+					11 & 00 & \textbf{11} \\ \hline
+					\end{tabular}
+				% \end{center}
+
+				\item
+				\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 00 & 10 \\ \hline
+					00 & \textbf{00} & - \\ \hline
+					01 & \textbf{01} & 10 \\ \hline
+					10 & 00 & \textbf{10} \\ \hline
+				\end{tabular}
+				devient
+				\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 00 & 10 \\ \hline
+					00 & \textbf{00} & \color{red}{10} \\ \hline
+					01 & \textbf{01} & \color{red}{00} \\ \hline
+					10 & 00 & \textbf{10} \\ \hline
+				\end{tabular}
+
+				\item
+				\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 01 & 11 \\ \hline
+					00 & \textbf{00} & 01 \\ \hline
+					11 & 00 & \textbf{11} \\ \hline
+					10 & - & \textbf{10} \\ \hline
+				\end{tabular}
+				devient
+				\begin{tabular}{|c|c|c|}\hline
+					$Y_1Y_2$ & 01 & 11 \\ \hline
+					00 & \textbf{00} & 01 \\ \hline
+					11 & \color{red}{10} & \textbf{11} \\ \hline
+					10 & \color{red}{00} & \textbf{10} \\ \hline
+				\end{tabular}
+			\end{enumerate}
+
+			On obtient donc une nouvelle table de Huffman sans condition de course~:
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|l}
+				\hline
+				 $Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00 & \textbf{00} & \textbf{00} & 01          & 10          &    \\ \cline{1-5}
+				01 & \textbf{01} & \textbf{01} & 11          & 00          &    \\ \cline{1-5}
+				11 & 01          & 10          & \textbf{11} & \textbf{11} &    \\ \cline{1-5}
+				10 & 00          & 00          & \textbf{10} & \textbf{10} &    \\ \cline{1-5}
+				\end{tabular}
+			\end{center}
+		}
+	\end{enumerate}
+
+\reponse{}
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+	En codant les états 1, 2, 3 et 4 par $y_1y_2$ = 00, 01, 11 et 10 respectivement, calculer les fonctions d'excitation des organes de mémoire pour l'automatisme suivant :
+
+
+	\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l}
+		\hline
+		$Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+		1           & \textbf{1} & \textbf{1} & 2          & -          &                         \\ \cline{1-5}
+		2           & \textbf{2} & 3          & \textbf{2} & \textbf{2} &                         \\ \cline{1-5}
+		3           & 4          & \textbf{3} & 2          & -          &                         \\ \cline{1-5}
+		4           & \textbf{4} & 1          & 2          & \textbf{-} &                         \\ \cline{1-5}
+		\end{tabular}
+	\end{center}
+	Comme organes de mémoire on considérera des flip-flops D puis des flip-flops SRc.
+
+	\reponse{
+		Commençons par coder la table de Huffman~:
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l}
+			\hline
+			$Y_1$ $Y_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+			00           & \textbf{00} & \textbf{00} & 01          & -          &                         \\ \cline{1-5}
+			01           & \textbf{01} & 11          & \textbf{01} & \textbf{01} &                         \\ \cline{1-5}
+			11           & 10          & \textbf{11} & 01          & -          &                         \\ \cline{1-5}
+			10           & \textbf{10} & 00          & 01          & \textbf{-} &                         \\ \cline{1-5}
+			\end{tabular}
+		\end{center}
+
+		À titre de rappel, les termes d'excitation sont repris dans la table~\ref{tab:fct-exc} et les tables d'excitation dans les tables~\ref{tab:exc-flip-flop}.
+
+		\begin{table}[H]
+		\centering
+			\begin{tabular}{cccl}
+			$Q$ & $Q^+$ & & \\ \hline
+			0 & 0 & $\mu_0$ & Maintien à 0 \\
+			0 & 1 & $\varepsilon$ & Enclenchement \\
+			1 & 0 & $\delta$ & Désenclenchement \\
+			1 & 1 & $\mu_1$ & Maintien à 1\\
+			\end{tabular}
+		\caption{Termes d'excitation, $Q$ étant l'état courant et $Q^+$ l'état futur.}
+		\label{tab:fct-exc}
+		\end{table}
+		\begin{table}[ht]
+			\center
+			\subfloat[\label{tab:exc-D}Flip-flop D]{%
+				\parbox{.3\linewidth}{% Embed the content of the subfloat into a parbox to make it wider. Otherwise, the width of the subfloat is set by the width of the table, and so is the caption.
+				\center
+					\begin{tabular}{c|c}
+					& D \\ \hline
+					$\mu_0$ & 0 \\
+					$\varepsilon$ & 1 \\
+					$\delta$ & 0 \\
+					$\mu_1$ & 1
+					\end{tabular}
+				}
+			}
+			\subfloat[\label{tab:exc-SR}Flip-flop SR]{%
+				\parbox{.3\linewidth}{%
+					\center
+					\begin{tabular}{c|cc}
+					& S & R \\ \hline
+					$\mu_0$ & 0 & - \\
+					$\varepsilon$ & 1 & 0 \\
+					$\delta$ & 0 & 1 \\
+					$\mu_1$ & - & 0
+					\end{tabular}
+				}
+			}
+			\caption{Tables d'excitation des flip-flops (a) D et (b) SR.}
+			\label{tab:exc-flip-flop}
+		\end{table}
+
+		La première étape consiste à dresser la table d'états à partir de la table de Huffman.
+		Pour cela, on remplace les termes des états stables par leur terme de maintien correspondant~: $00$ devient $\mu_0\mu_0$, $01$ devient $\mu_0\mu_1$, etc.
+		Quant aux termes de transition, ils dépendent des changements d'état. Par exemple, si l'on passe de l'état $00$ à l'état $01$, le premier terme de l'état futur est maintenu à zéro, tandis que le second passe de $0$ à $1$ (il est enclenché), résultant en une transition $\mu_0\varepsilon$.
+		On obtient alors la table d'état suivante~:
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l} \hline
+			$Q^+_1$ $Q^+_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+			00           & $\mu_0\mu_0$ & $\mu_0\mu_0$ & $\mu_0\varepsilon$ & - & \\ \cline{1-5}
+			01           & $\mu_0\mu_1$ & $\varepsilon\mu_1$ & $\mu_0\mu_1$ & $\mu_0\mu_1$ & \\ \cline{1-5}
+			11           & $\mu_1\delta$ & $\mu_1\mu_1$ & $\delta\mu_1$ & - & \\ \cline{1-5}
+			10           & $\mu_1\mu_0$ & $\delta\mu_0$ & $\delta\varepsilon$ & - & \\ \cline{1-5}
+			\end{tabular}
+		\end{center}
+
+		Étant donné que chaque état futur est composé de deux termes, deux flip-flops seront nécessaires, un pour chacune des deux «~sous-tables d'états~» suivantes~:
+		\begin{center}
+			\begin{tabular}{|l|l|l|l|l|l} \hline
+			$Q^+_1$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+			00           & $\mu_0$ & $\mu_0$ & $\mu_0$ & - & \\ \cline{1-5}
+			01           & $\mu_0$ & $\varepsilon$ & $\mu_0$ & $\mu_0$ & \\ \cline{1-5}
+			11           & $\mu_1$ & $\mu_1$ & $\delta$ & - & \\ \cline{1-5}
+			10           & $\mu_1$ & $\delta$ & $\delta$ & - & \\ \cline{1-5}
+			\end{tabular}
+			\begin{tabular}{|l|l|l|l|l|l} \hline
+			$Q^+_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+			00           & $\mu_0$ & $\mu_0$ & $\varepsilon$ & - & \\ \cline{1-5}
+			01           & $\mu_1$ & $\mu_1$ & $\mu_1$ & $\mu_1$ & \\ \cline{1-5}
+			11           & $\delta$ & $\mu_1$ & $\mu_1$ & - & \\ \cline{1-5}
+			10           & $\mu_0$ & $\mu_0$ & $\varepsilon$ & - & \\ \cline{1-5}
+			\end{tabular}
+		\end{center}
+
+
+		\begin{enumerate}
+			\item Considérons d'abord un flip-flop D.
+			D'après la table d'excitation de l'organe table~\ref{tab:exc-D}, on peut établir les deux tables d'état des deux flip-flops $D_1$ et $D_2$~:
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|l} \hline
+				$D_1$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00           & 0 & 0 & 0 & - & \\ \cline{1-5}
+				01           & 0 & 1 & 0 & 0 & \\ \cline{1-5}
+				11           & 1 & 1 & 0 & - & \\ \cline{1-5}
+				10           & 1 & 0 & 0 & - & \\ \cline{1-5}
+				\end{tabular}
+				\begin{tabular}{|l|l|l|l|l|l} \hline
+				$D_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00           & 0 & 0 & 1 & - & \\ \cline{1-5}
+				01           & 1 & 1 & 1 & 1 & \\ \cline{1-5}
+				11           & 0 & 1 & 1 & - & \\ \cline{1-5}
+				10           & 0 & 0 & 1 & - & \\ \cline{1-5}
+				\end{tabular}
+			\end{center}
+
+			Les k-maps et fonctions d'excitation sont maintenant immédiates~:
+			\begin{center}
+			\askmapiv{$D_1 = y_1\overline{a} + y_2\overline{a}b$}{a b $y_1$ $y_2$}{}{00110101-0--0000}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+			\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+			\color{green}\put(1.1,1.1){\dashbox{0.2}(0.8,1.8){}}%
+			}
+
+			\askmapiv{$D_2 = y_2b + \overline{y_1}y_2 + a$}{a b $y_1$ $y_2$}{}{01000101-1--1111}{%
+			\color{red}\put(1.1,1.1){\dashbox{0.1}(1.8,1.7){}}%
+			\color{blue}\put(0.1,2.1){\dashbox{0.1}(3.8,0.8){}}%
+			\color{green}\put(2.1,0.1){\dashbox{0.2}(1.8,3.8){}}%
+			}
+			\end{center}
+
+
+			\item Passons ensuite au flip-flop SR.
+			En utilisant les mêmes sous-tables et la table d'excitation~\ref{tab:exc-SR}, on peut obtenir de nouvelles tables d'état~:
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|l} \hline
+				$S_1R_1$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00           & 0- & 0- & 0- & -- & \\ \cline{1-5}
+				01           & 0- & 10 & 0- & 0- & \\ \cline{1-5}
+				11           & -0 & -0 & 01 & -- & \\ \cline{1-5}
+				10           & -0 & 01 & 01 & -- & \\ \cline{1-5}
+				\end{tabular}
+				\begin{tabular}{|l|l|l|l|l|l} \hline
+				$S_2R_2$ & 00         & 01         & 11         & 10         & \multicolumn{1}{l|}{ab} \\ \hline
+				00           & 0- & 0- & 10 & -- & \\ \cline{1-5}
+				01           & -0 & -0 & -0 & -0 & \\ \cline{1-5}
+				11           & 01 & -0 & -0 & -- & \\ \cline{1-5}
+				10           & 0- & 0- & 10 & -- & \\ \cline{1-5}
+				\end{tabular}
+			\end{center}
+
+			De ces tables, on peut déduire des tables de Karnaugh ainsi que des fonctions d'excitation.
+			\begin{center}
+			\askmapiv{$S_1 = y_2\overline{a}b$}{a b $y_1$ $y_2$}{}{00--010--0--0000}{%
+			\color{red}\put(1.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
+			}
+
+			\askmapiv{$R_1 = a + \overline{y_2}b$}{a b $y_1$ $y_2$}{}{--00-010------11}{%
+			\color{red}\put(1.1,0.1){\dashbox{0.1}(1.8,0.8){}}%
+			\color{red}\put(1.1,3.1){\dashbox{0.1}(1.8,0.8){}}%
+			\color{blue}\put(2.1,0.2){\dashbox{0.2}(1.8,3.6){}}%
+			}
+
+			\askmapiv{$S_2 = a$}{a b $y_1$ $y_2$}{}{0-000-0-----1-1-}{%
+			\color{green}\put(2.1,0.1){\dashbox{0.2}(1.8,3.8){}}%
+			}
+
+			\askmapiv{$R_2 = y_1 \overline{b}$}{a b $y_1$ $y_2$}{}{-0-1-0-0-0--0000}{%
+			\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+			\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+			}
+			\end{center}
+
+		\end{enumerate}
+	}
+
+\end{Q}
+
+
+\end{document}

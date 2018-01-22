@@ -1,0 +1,19 @@
+\begin{Q}
+	Un ouvre-porte $Z_1$ est commandé par deux boutons $a$ et $b$ qu'il faut actionner dans le bon ordre sous peine de déclencher une alarme $Z_2$.
+	Celui-ci est décrit par la table de Huffman ci-dessous.
+	Implémentez l'automate correspondant en C.
+
+	\begin{center}
+		\begin{tabular}{|l|l|l|l|l|l|l|} \hline
+			\multirow{2}{*}{} & \multicolumn{4}{c|}{$ab$} & \multirow{2}{*}{$Z_1$} & \multirow{2}{*}{$Z_2$} \\ \cline{2-5}
+			& 00 & 01 & 11 & 10 & & \\ \hline
+			1 & \textbf{1} & 5 & 5 & 2 & 0 & 0 \\ \hline
+			2 & 3 & 5 & 5 & \textbf{2} & 0 & 0 \\ \hline
+			3 & \textbf{3} & 4 & 5 & 5 & 0 & 0 \\ \hline
+			4 & 1 & \textbf{4} & 5 & 5 & 1 & 0 \\ \hline
+			5 & 1 & \textbf{5} & \textbf{5} & \textbf{5} & 0 & 1 \\ \hline
+		\end{tabular}
+	\end{center}
+
+\reponse{}%TODO
+\end{Q}
