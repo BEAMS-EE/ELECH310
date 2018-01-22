@@ -2,14 +2,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsthm} %numéroter les questions
-\usepackage[frenchb]{babel}
+\usepackage[frenchb,english]{babel}
 \usepackage{datetime}
 \usepackage{xspace} % typographie IN
 \usepackage{hyperref}% hyperliens
 \usepackage[all]{hypcap} %lien pointe en haut des figures
 \usepackage[french]{varioref} %voir x p y
 \usepackage{fancyhdr}% en têtes
-%\input cyracc.def
 \usepackage{graphicx} %include pictures
 \usepackage{pgfplots}
 
@@ -21,23 +20,51 @@
 \usepackage{float}
 \usepackage{ifthen}
 
-\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
 \usepackage[]{pdfpages}
-
 \usepackage[]{attachfile}
 
 \usepackage{amsmath}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
 
+\usepackage{aeguill} %guillemets
 \usepackage{askmaps}
-% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage[]{xcolor}
-
-\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
-
-%cyr
-\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'correction'
+%	- 'fr', controlled by defining the variable 'french'
+%	- 'en', controlled by defining the variable 'english'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="elech310_tp1_fr" "\def\french{} \input{elech310_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Numero du TP :
+\def \tpnumber {TP 2 }
+
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
 \newboolean{corrige}
 \ifx\correction\undefined
 \setboolean{corrige}{false}% pas de corrigé
@@ -45,70 +72,112 @@
 \setboolean{corrige}{true}%corrigé
 \fi
 
-%\setboolean{corrige}{false}% pas de corrigé
+\newboolean{fr}
+\ifx\french\undefined
+\setboolean{fr}{false}% pas de corrigé
+\else
+\setboolean{fr}{true}%corrigé
+\fi
 
-\newboolean{annexes}
-\setboolean{annexes}{true}%annexes
-%\setboolean{annexes}{false}% pas de annexes
+\newboolean{en}
+\ifx\english\undefined
+\setboolean{en}{false}% pas de corrigé
+\else
+\setboolean{en}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
 
 \definecolor{darkblue}{rgb}{0,0,0.5}
 
-\newboolean{mos}
-%\setboolean{mos}{true}%annexes
-\setboolean{mos}{false}% pas de annexes
-
-\usepackage{aeguill} %guillemets
-
-%% fancy header & foot
-\pagestyle{fancy}
-\lhead{[ELEC-H-310] Électronique numérique\\ TP 2}
-\rhead{\mydate\today\\ page \thepage}
-\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
-\cfoot{}
-%%
-
 \pdfinfo{
-/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
-/Title (TP 2, ELEC-H-310)
+/Author (ULB -- BEAMS)
+/Title (\tpnumber, ELEC-H-310)
 /ModDate (D:\pdfdate)
 }
 
 \hypersetup{
-pdftitle={TP 2 [ELEC-H-310] Choucroute numérique},
-pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdftitle={\tpnumber [ELEC-H-310] Choucroute numérique},
+pdfauthor={ULB -- BEAMS},
 pdfsubject={}
 }
 
 \theoremstyle{definition}% questions pas en italique
 \newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
 
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
 \newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
-	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+	\ifthenelse {\boolean{corrige}} {\fr{\paragraph{Réponse :}}\en{\paragraph{Answer:}} \color{darkblue}   #1\color{black}} {}
+ }
+
+ \newcommand{\fr}[1]{
+ 	\ifthenelse {\boolean{fr}} {#1} {}
+ }
+
+ \newcommand{\en}[1]{
+ 	\ifthenelse {\boolean{en}} {#1} {}
  }
 
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
 
-\date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm} TP 2\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] \fr{Électronique numérique}\en{Digital Electronics}\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{\fr{Corrigé}\en{Correction}}{}}
+\cfoot{}
+%%
 
 \setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
 \setlength{\parindent}{0pt}
 
-% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
-\usepackage{enumitem}
-\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber\\ \fr{Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}%
+\en{Digital Electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}%
+}
+
+
+
 
 \begin{document}
-\pagestyle{empty}
+\fr{\selectlanguage{french}}
+\en{\selectlanguage{english}}
+
 \maketitle
 \vspace*{1cm}
 
-\textit{Note~:} On adopte la convention de notation suivante~: $\overline{ab} = \overline{a} \cdot \overline{b}$ et $\overline{(ab)} = \overline{a \cdot b} = \overline{a} + \overline{b}$
+\fr{\textit{Note~:} On adopte la convention de notation suivante~: $\overline{ab} = \overline{a} \cdot \overline{b}$ et $\overline{(ab)} = \overline{a \cdot b} = \overline{a} + \overline{b}$}
+\en{\textit{N.B.:} We use the following convention~: $\overline{ab} = \overline{a} \cdot \overline{b}$ and $\overline{(ab)} = \overline{a \cdot b} = \overline{a} + \overline{b}$}
 \begin{Q}
-	Prouver, par comparaison des tables de vérité, l'égalité suivante~:
+	\fr{Prouver, par comparaison des tables de vérité, l'égalité suivante~:}
+	\en{Proove this equality by comparing truth tables.}
 	\[\overline{a}c + \overline{abc} = \overline{ab} + \overline{a}c\]
 	\label{Q:1}
-	\reponse{On s'en convainc en voyant que $F1 = F2$
+	\reponse{
+	\fr{On s'en convainc en voyant que $F1 = F2$}
+	\en{We can compare $F1 = F2$}
 
 		\renewcommand{\arraystretch}{1.2}
 		\begin{center}
@@ -129,7 +198,8 @@ pdfsubject={}
 
 
 \begin{Q}
-	Simplifier par manipulation algébrique les expressions suivantes~:
+	\fr{Simplifier par manipulation algébrique les expressions suivantes~:}
+	\en{Simplify these expressions using algebraic manipulations.}
 
 	\begin{enumerate}
 		\item $(a+b) \cdot (a+\overline{b})$
@@ -204,7 +274,8 @@ pdfsubject={}
 
 
 \begin{Q}
-	Écrire les expressions logiques suivantes sous forme de minterms (forme disjonctive normale)~:
+	\fr{Écrire les expressions logiques suivantes sous forme de minterms (forme disjonctive normale)~:}
+	\en{Write these expressions as minterms (disjunctive normal form).}
 	\begin{enumerate}
 		\item $F(a,b,c,d) = a\overline{b}c + \overline{ab} + ab\overline{c}d$
 		\reponse{
@@ -232,7 +303,8 @@ pdfsubject={}
 
 
 \begin{Q}
-	Simplifier $F(a,b)$ à l'aide des K-maps (rappel~: afin de remplir la table de Karnaugh, on peut développer la fonction logique dans l'une de ses formes canoniques.)~:
+	\fr{Simplifier $F(a,b)$ à l'aide des K-maps (rappel~: afin de remplir la table de Karnaugh, on peut développer la fonction logique dans l'une de ses formes canoniques.)~:}
+	\en{Simplify $F(a,b)$ using K-maps. Reminder: to fill the Karnaugh table, you can develop the function into one of its canonic forms.}
 	\begin{enumerate}
 		\item $F(a,b) = a + \overline{a}b + \overline{ab}$
 		\reponse{
@@ -263,7 +335,8 @@ pdfsubject={}
 
 
 \begin{Q}
-	Simplifier $F(a,b,c)$ à l'aide des K-maps~:
+	\fr{Simplifier $F(a,b,c)$ à l'aide des K-maps~:}
+	\en{Simplify $F(a,b,c)$ using K-maps.}
 	\begin{enumerate}
 		\item $F(a,b,c) = \overline{a}c + \overline{abc}$
 		\reponse{%TODO Mettre les termes dans la même couleur que les cadres dans les K-maps.
@@ -298,7 +371,8 @@ pdfsubject={}
 
 
 \begin{Q}
-	Simplifier $F(a,b,c,d)$ à l'aide des K-maps~:
+	\fr{Simplifier $F(a,b,c,d)$ à l'aide des K-maps~:}
+	\en{Simplify $F(a,b,c,d)$ using K-maps.}
 	\begin{enumerate}
 		\item $F(a,b,c,d) = abd + acd + bcd + ab + \overline{a}cd + \overline{ab}cd$
 		\reponse{
@@ -332,7 +406,8 @@ pdfsubject={}
 \end{Q}
 
 \begin{Q}
-	Simplifier $F(a,b,c,d,e)$ à l'aide des K-maps~:
+	\fr{Simplifier $F(a,b,c,d,e)$ à l'aide des K-maps~:}
+	\en{Simplify $F(a,b,c,d,e)$ using K-maps.}
 	\begin{enumerate}
 		\item $F(a,b,c,d,e) = a\overline{e} + b\overline{e} + a\overline{b}ce + a\overline{b}cde + a\overline{b}c\overline{e} + \overline{acde} + \overline{abe} + \overline{ab}ce$
 		\reponse{
