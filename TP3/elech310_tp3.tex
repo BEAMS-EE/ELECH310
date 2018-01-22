@@ -1,0 +1,519 @@
+\documentclass[11pt,a4paper,dvipsnames]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[frenchb,english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[french]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows,automata}
+\usetikzlibrary{babel}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
+\usepackage[]{pdfpages}
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+\usepackage{bigdelim}%Braces in tabular
+
+\usepackage{aeguill} %guillemets
+\usepackage{askmaps}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'correction'
+%	- 'fr', controlled by defining the variable 'french'
+%	- 'en', controlled by defining the variable 'english'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="elech310_tp1_fr" "\def\french{} \input{elech310_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Numero du TP :
+\def \tpnumber {TP 3 }
+
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+
+\newboolean{fr}
+\ifx\french\undefined
+\setboolean{fr}{false}% pas de corrigé
+\else
+\setboolean{fr}{true}%corrigé
+\fi
+
+\newboolean{en}
+\ifx\english\undefined
+\setboolean{en}{false}% pas de corrigé
+\else
+\setboolean{en}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\pdfinfo{
+/Author (ULB -- BEAMS)
+/Title (\tpnumber, ELEC-H-310)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={\tpnumber [ELEC-H-310] Choucroute numérique},
+pdfauthor={ULB -- BEAMS},
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\fr{\paragraph{Réponse :}}\en{\paragraph{Answer:}} \color{darkblue}   #1\color{black}} {}
+ }
+
+ \newcommand{\fr}[1]{
+ 	\ifthenelse {\boolean{fr}} {#1} {}
+ }
+
+ \newcommand{\en}[1]{
+ 	\ifthenelse {\boolean{en}} {#1} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] \fr{Électronique numérique}\en{Digital Electronics}\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{\fr{Corrigé}\en{Correction}}{}}
+\cfoot{}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber\\ \fr{Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}%
+\en{Digital Electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}%
+}
+
+
+
+
+\begin{document}
+\fr{\selectlanguage{french}}
+\en{\selectlanguage{english}}
+\maketitle
+\vspace*{-1cm}
+
+%Debut du TP
+\begin{Q}
+\fr{Trouver les impliquants premiers par la méthode de Quine - Mc Cluskey:}
+\en{Find all prime implicant using the Quine-McCluskey method.}
+
+\fr{\textit{Note~: $\sum_m$ désigne une somme de mintermes, $\sum_d$ une somme de « don't care ».}}
+\en{\textit{N.B.: $\sum_m$ is a sum of minterms, $\sum_d$ is a sum of `don't care'.}}
+
+\begin{enumerate}
+%	\item $f(a,b,c,d)=\sum_m(2,4,8,9,10,11,13,15)$
+	\item $f(a,b,c,d)=\sum_m(0,4,5,8,12,13)$
+	\reponse{
+		\fr{Il convient d'abord de convertir les nombres décimaux dans leur forme binaire~:}
+		\en{We first need to convert decimal numbers into binary.}
+		\begin{center}
+			\begin{tabular}{c|cccc}
+			 & a & b & c & d \\ \hline
+			 0 & 0 & 0 & 0 & 0 \\
+			 4 & 0 & 1 & 0 & 0 \\
+			 5 & 0 & 1 & 0 & 1 \\
+			 8 & 1 & 0 & 0 & 0 \\
+			 12 & 1 & 1 & 0 & 0 \\
+			 13 & 1 & 1 & 0 & 1 \\
+			\end{tabular}
+		\end{center}
+
+		\fr{On peut ensuite établir les différents groupes et fusionner ceux-ci.
+		La marque $\checkmark$ indique qu'une ligne a été regroupée avec une autre.
+		Les nombres entre parenthèses indiquent quels nombres ont été fusionnés.}
+		\en{Then, we can group the elements and merge them.
+		The `$\checkmark$' states that a line as been merged.
+		The numbers between parenthesis show the values that have been merged.}
+
+		\begin{minipage}{0.5\textwidth}
+			\begin{tabular}{ccccccc}
+			 & a & b & c & d & & \\
+			 $G_0$ & 0 & 0 & 0 & 0 & 0 & $\checkmark$ \\ \hline
+			 $G_1$ & 0 & 1 & 0 & 0 & 4 & $\checkmark$ \\
+			 & 1 & 0 & 0 & 0 & 8 & $\checkmark$ \\ \hline
+			 $G_2$ & 1 & 1 & 0 & 0 & 12 & $\checkmark$ \\
+			 & 0 & 1 & 0 & 1 & 5 & $\checkmark$ \\ \hline
+			 $G_3$ & 1 & 1 & 0 & 1 & 13 & $\checkmark$ \\
+			\end{tabular}
+		\end{minipage}%
+		\begin{minipage}{0.5\textwidth}
+			\begin{tabular}{ccccccc}
+			 & a & b & c & d & & \\
+			 $G_{0'}$ & 0 & -- & 0 & 0 & (0,4) & $\checkmark$ \\
+			 & -- & 0 & 0 & 0 & (0,8) & $\checkmark$ \\ \hline
+			 $G_{1'}$ & -- & 1 & 0 & 0 & (4,12) & $\checkmark$ \\
+			 & 0 & 1 & 0 & -- & (4,5) & $\checkmark$ \\
+			 & 1 & -- & 0 & 0 & (8,12) & $\checkmark$ \\ \hline
+			 $G_{2'}$ & 1 & 1 & 0 & -- & (12,13) & $\checkmark$ \\
+			 & -- & 1 & 0 & 1 & (5,13) & $\checkmark$ \\
+			\end{tabular}
+		\end{minipage}
+		\begin{center}
+			\begin{tabular}{cccccccc}
+			$G_{0''}$ & -- & -- & 0 & 0 & (0,4|8,12) & Fusion & \rdelim\}{2}{10mm}[IP1] \\
+			& -- & -- & 0 & 0 & (0,8|4,12) & Fusion \\ \hline
+			$G_{1''}$ & -- & 1 & 0 & -- & (4,12|5,13) & Fusion & \rdelim\}{2}{10mm}[IP2] \\
+			& -- & 1 & 0 & -- & (4,5|12,13) & Fusion \\
+			\end{tabular}
+		\end{center}
+
+		\fr{Les impliquants premiers sont donc $\overline{cd}$ (IP1) et $b\overline{c}$ (IP2).}
+		\en{The prime implicants hence are $\overline{cd}$ (IP1) and $b\overline{c}$ (IP2).}
+
+	}
+	\item $f(a,b,c,d)=\sum_m(2,3,4,10,12,13)+\sum_d(11,14,15)$
+	\reponse{
+		$f(a,b,c,d)=\overline{b}c+b\overline{c}\overline{d}+ac+ab$
+	}
+%	\item $f(a,b,c,d,e)=\sum_m(0,1,2,4,11,15,17,20,21,31)+\sum_d(5,6,16,18,22,27)$
+	\item $f(a,b,c,d,e,f)=\sum_m(16,28,53,60,63)$
+	\reponse{
+		$f(a,b,c,d,e,f)=abcdef+bcd\overline{ef}+ab\overline{c}d\overline{e}f+\overline{a}b\overline{cdef}$
+	}
+%	\item $f(a,b,c,d,e,f)=\sum_m(1,2,3,15,17,18,19,26,32,48,63)$
+\end{enumerate}
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+\fr{Trouver la fonction simplifiée :}
+\en{Find the simplified function:}
+\begin{enumerate}
+	\item $f(a,b,c,d)=\sum_m(2,3,4,10,12,13)+\sum_d(11,14,15)$
+	\reponse{
+		\fr{Tableau de couverture avec les impliquants premiers de l'exercice précédent :}
+		\en{The coverage table with the prime implicants of the previous exercise:}
+		$i_1$ = $b\overline{cd}$, $i_2$ = $\overline{b}c$, $i_3$ = $ac$ et $i_4$ = $ab$.
+
+		\begin{center}
+			\begin{tabular}{ccccc}
+			 & $i_1$ & $i_2$ & $i_3$ & $i_4$ \\ \hline
+			 0010 & & $\checkmark$ & & \\ \hline
+			 0011 & & $\checkmark$ & & \\ \hline
+			 0100 & $\checkmark$ & & & \\ \hline
+			 1010 & & $\checkmark$ & $\checkmark$ & \\ \hline
+			 1100 & $\checkmark$ &  &  & $\checkmark$ \\ \hline
+			 1101 & & & & $\checkmark$ \\ \hline
+			 % 1011 &  & $\checkmark$ & $\checkmark$ & \\ \hline
+			 % 1110 & & & $\checkmark$ & $\checkmark$ \\ \hline
+			 % 1111 & & & $\checkmark$ & $\checkmark$ \\
+			\end{tabular}
+		\end{center}
+
+		\fr{On peut en déduire l'équation de couverture suivante~:}
+		\en{We can deduce the following coverage function:}
+		\[1 = i_2 \cdot i_1 \cdot (i_2 + i_3) \cdot (i_1 + i_4) \cdot i_4 = i_2i_1i_4\]
+		\fr{En utilisant les axiomes et théorèmes suivants~:}
+		\en{Using these axioms and theorems:}
+		\begin{align*}
+		& x \cdot x = x\\
+		& x \cdot (x + y) = x\\
+		& (x + y) \cdot (x + z) = x + y \cdot z
+		\end{align*}
+
+		\fr{On trouve ainsi}\en{We find} $f(a,b,c,d)=\overline{b}c+b\overline{cd}+ab$
+	}
+
+	\item $f(a,b,c,d)=\sum_m(0,2,4,5,10,11,13,15)+\sum_d(6,8)$
+	\reponse {
+		$f(a,b,c,d)=\overline{a}b\overline{c}+\overline{b}\overline{d}+a\overline{b}c+abd$
+	ou $f(a,b,c,d)=a\overline{b}c+b\overline{c}d+abd+\overline{ad}$
+	ou $f(a,b,c,d)=\overline{a}b\overline{c} + a\overline{b}c + abd + \overline{a}\overline{d}$
+	ou $f(a,b,c,d)=b\overline{c}d + a\overline{b}c + acd + \overline{a}\overline{d}$
+	ou $f(a,b,c,d)=b\overline{c}d + acd + \overline{a}\overline{d} + \overline{b}\overline{d}$
+	ou $f(a,b,c,d)=\overline{a}b\overline{c} + acd + abd + \overline{b}\overline{d}$
+	ou $f(a,b,c,d)=\overline{a}b\overline{c} + b\overline{c}d + acd + \overline{b}\overline{d}$
+	}
+%	\item $f(a,b,c,d)=\sum_m(1,5,6,9,11,12,14,15)+ \sum_d(2,3,4,13)$
+
+\end{enumerate}
+
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+\fr{Pour les fonctions proposées dessiner les K-maps, optimiser les fonctions et prévoir les termes redondants (problème des aléas) :}
+\en{Draw the K-maps of the following function, optimize the functions and find redundant terms to avoid glitches.}
+	\begin{enumerate}
+		\item $f(a,b,c,d)=\sum_m(0,1,2,6,8,9,10,14)$
+		\reponse{
+			\begin{center}
+				\askmapiv{$F=c\overline{d} + \overline{bc} + \overline{bd}$}{c d a b}{}{1010101011110000}{% raise Z input
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(1.8,0.8){}}%
+				\color{red}\put(0.1,3.1){\dashbox{0.1}(1.8,0.8){}}%
+				\color{green}\put(3.1,0.1){\dashbox{0.1}(0.8,3.8){}}%
+				\color{blue}\put(0.2,0.2){\dashbox{0.2}(0.6,0.6){}}%
+				\color{blue}\put(0.2,3.2){\dashbox{0.2}(0.6,0.6){}}%
+				\color{blue}\put(3.2,0.2){\dashbox{0.2}(0.6,0.6){}}%
+				\color{blue}\put(3.2,3.2){\dashbox{0.2}(0.6,0.6){}}%
+				}
+			\end{center}
+		}
+		\item $f(a,b,c,d)=\sum_m(1,3,5,7,8,9,12,13)$
+		\reponse{
+			\begin{center}
+				\askmapiv{$F=\overline{a}d + a\overline{c} + \overline{c}d$}{c d a b}{}{0011111100001100}{% raise Z input
+				\color{red}\put(0.1,0.1){\dashbox{0.1}(1.8,1.8){}}%
+				\color{green}\put(1.1,2.1){\dashbox{0.1}(1.8,1.8){}}%
+				\color{blue}\put(1.2,0.2){\dashbox{0.2}(0.6,3.6){}}%
+				}
+			\end{center}
+		}
+	\end{enumerate}
+
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+\fr{Dresser la table de Huffman pour le graphe suivant :}
+\en{Build a Huffman table for this graph:}
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3.5cm,semithick,align=center]
+  \tikzstyle{every state}=[fill=white,text=black]
+
+  \node[state]         (A)              {$A$\\ Z=0};
+  \node[state]         (B) [right of=A] {$B$\\ Z=0};
+  \node[state]         (D) [below of=A] {$D$\\ Z=0};
+  \node[state]         (C) [below of=B] {$C$\\ Z=1};
+
+  \path (A) edge [bend left]  node {ab=01} (B)
+            edge [bend right]  node {11} (D)
+			edge [loop left]  node {00,10} (A)
+        (B) edge [loop right] node {01,11} (B)
+            edge [bend left]  node {00} (A)
+			edge [bend left]  node {10} (C)
+        (C) edge [bend left]  node {11} (D)
+		    edge [loop right] node {10,00,01} (C)
+        (D) edge [loop left]  node {11,00} (D)
+            edge              node {01} (B)
+			edge [bend left]  node {10} (C);
+\end{tikzpicture}
+\end{center}
+
+\reponse{
+\begin{center}
+\begin{tabular}{lllllll}
+\hline
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{00}          & \multicolumn{1}{l|}{01}          & \multicolumn{1}{l|}{11}          & \multicolumn{1}{l|}{10}          & \multicolumn{1}{l|}{ab} & \multicolumn{1}{l|}{Z} \\ \hline
+\multicolumn{1}{|l|}{A}      & \multicolumn{1}{l|}{\textbf{A}} & \multicolumn{1}{l|}{B}          & \multicolumn{1}{l|}{D}          & \multicolumn{1}{l|}{\textbf{A}} & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{0} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{B}      & \multicolumn{1}{l|}{A}          & \multicolumn{1}{l|}{\textbf{B}} & \multicolumn{1}{l|}{\textbf{B}}          & \multicolumn{1}{l|}{C}          & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{0} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{C}      & \multicolumn{1}{l|}{\textbf{C}}          & \multicolumn{1}{l|}{\textbf{C}}          & \multicolumn{1}{l|}{D} & \multicolumn{1}{l|}{\textbf{C}} & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{1} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{D}      & \multicolumn{1}{l|}{\textbf{D}}          & \multicolumn{1}{l|}{B} & \multicolumn{1}{l|}{\textbf{D}} & \multicolumn{1}{l|}{C}          & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{0} \\ \cline{1-5} \cline{7-7}
+                      &                                  &                                  &                                  &                                  &                         &
+\end{tabular}
+\end{center}
+}
+\end{Q}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{Q}
+\fr{À partir de cette table de Huffman codée trouver les équations et le graphe d'états correspondant :}
+\en{From this coded Huffman table, find the corresponding state graph and equations.}
+
+\begin{center}
+\begin{tabular}{lllllll}
+\hline
+\multicolumn{1}{|l|}{$Y_1$ $Y_2$} & \multicolumn{1}{l|}{00}          & \multicolumn{1}{l|}{01}          & \multicolumn{1}{l|}{11}          & \multicolumn{1}{l|}{10}          & \multicolumn{1}{l|}{ab} & \multicolumn{1}{l|}{Z} \\ \hline
+\multicolumn{1}{|l|}{00}      & \multicolumn{1}{l|}{\textbf{00}} & \multicolumn{1}{l|}{01}          & \multicolumn{1}{l|}{01}          & \multicolumn{1}{l|}{\textbf{00}} & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{0} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{01}      & \multicolumn{1}{l|}{00}          & \multicolumn{1}{l|}{\textbf{01}} & \multicolumn{1}{l|}{11}          & \multicolumn{1}{l|}{11}          & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{1} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{11}      & \multicolumn{1}{l|}{\textbf{11}}          & \multicolumn{1}{l|}{10}          & \multicolumn{1}{l|}{\textbf{11}} & \multicolumn{1}{l|}{\textbf{11}} & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{1} \\ \cline{1-5} \cline{7-7}
+\multicolumn{1}{|l|}{10}      & \multicolumn{1}{l|}{11}          & \multicolumn{1}{l|}{\textbf{10}} & \multicolumn{1}{l|}{\textbf{10}} & \multicolumn{1}{l|}{00}          & \multicolumn{1}{l|}{}   & \multicolumn{1}{l|}{1} \\ \cline{1-5} \cline{7-7}
+$y_1$ $y_2$                      &                                  &                                  &                                  &                                  &                         &
+\end{tabular}
+\end{center}
+
+\reponse{
+	\begin{center}
+	\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3.5cm,semithick,align=center]
+	  \tikzstyle{every state}=[fill=white,text=black]
+
+	  \node[state]         (A)              {$00$\\ Z=0};
+	  \node[state]         (B) [right of=A] {$01$\\ Z=1};
+	  \node[state]         (D) [below of=A] {$10$\\ Z=1};
+	  \node[state]         (C) [below of=B] {$11$\\ Z=1};
+
+	  \path (A) edge [bend left]  node {ab=01,11} (B)
+	            % edge [bend right]  node {11} (D)
+				edge [loop left]  node {00,10} (A)
+	        (B) edge [loop right] node {01} (B)
+	            edge [bend left]  node {00} (A)
+				edge [bend left]  node {11,10} (C)
+				edge [bend left]  node {00} (A)
+	        (C) edge [bend left]  node {01} (D)
+			    edge [loop right] node {10,00,11} (C)
+	        (D) edge [loop left]  node {11,01} (D)
+	            edge [bend left]  node {10} (A)
+				edge [bend left]  node {00} (C);
+	\end{tikzpicture}
+	\end{center}
+
+	\fr{Afin de déterminer l'équation correspondante, on peut dériver des tables de Karnaugh de la table de Huffman.}
+	\en{In order to find the underlying equation, we can deduce Karnaugh tables from the Huffan table.}
+
+	\begin{center}
+		\askmapiv{$Y_1=y_2a + y_1 \overline{a} + y_1b$}{a b $y_1$ $y_2$}{}{0011001101010111}{% raise Z input
+		\color{red}\put(0.1,0.1){\dashbox{0.1}(1.8,1.8){}}%
+		\color{green}\put(2.1,1.1){\dashbox{0.1}(1.8,1.8){}}%
+		\color{blue}\put(1.1,0.2){\dashbox{0.2}(1.8,1.6){}}%
+		}
+
+		\askmapiv{$Y_2=y_1\overline{ab} + \overline{y_1}b + y_2a$}{a b $y_1$ $y_2$}{}{0011110001011101}{% raise Z input
+		\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+		\color{green}\put(1.1,2.1){\dashbox{0.1}(1.8,1.8){}}%
+		\color{blue}\put(2.1,1.1){\dashbox{0.2}(1.8,1.8){}}%
+		}
+
+		\askmapiv{$Z=y_2+y_1$}{a b $y_1$ $y_2$}{}{0-11-11101-1-111}{% raise Z input
+		\color{red}\put(0.1,0.1){\dashbox{0.1}(3.8,1.8){}}%
+		\color{blue}\put(0.2,1.1){\dashbox{0.2}(3.6,1.8){}}%
+		}
+	\end{center}
+}
+\end{Q}
+
+\end{document}
