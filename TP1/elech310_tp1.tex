@@ -2,14 +2,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsthm} %numéroter les questions
-\usepackage[frenchb,]{babel}
+\usepackage[frenchb,english]{babel}
 \usepackage{datetime}
 \usepackage{xspace} % typographie IN
 \usepackage{hyperref}% hyperliens
 \usepackage[all]{hypcap} %lien pointe en haut des figures
 \usepackage[french]{varioref} %voir x p y
 \usepackage{fancyhdr}% en têtes
-%\input cyracc.def
 \usepackage{graphicx} %include pictures
 \usepackage{pgfplots}
 
@@ -21,7 +20,7 @@
 \usepackage{float}
 \usepackage{ifthen}
 
-\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
 \usepackage[]{pdfpages}
 \usepackage[]{attachfile}
 
@@ -30,14 +29,41 @@
 \setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
 \usepackage{multirow}
 
-\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+\usepackage{aeguill} %guillemets
 
-%cyr
-\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'correction'
+%	- 'fr', controlled by defining the variable 'french'
+%	- 'en', controlled by defining the variable 'english'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="elech310_tp1_fr" "\def\french{} \input{elech310_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Numero du TP :
 \def \tpnumber {TP 1 }
 
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
 \newboolean{corrige}
 \ifx\correction\undefined
 \setboolean{corrige}{false}% pas de corrigé
@@ -45,62 +71,105 @@
 \setboolean{corrige}{true}%corrigé
 \fi
 
-%\setboolean{corrige}{false}% pas de corrigé
+\newboolean{fr}
+\ifx\french\undefined
+\setboolean{fr}{false}% pas de corrigé
+\else
+\setboolean{fr}{true}%corrigé
+\fi
 
-\newboolean{annexes}
-\setboolean{annexes}{true}%annexes
-%\setboolean{annexes}{false}% pas de annexes
+\newboolean{en}
+\ifx\english\undefined
+\setboolean{en}{false}% pas de corrigé
+\else
+\setboolean{en}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
 
 \definecolor{darkblue}{rgb}{0,0,0.5}
 
-\newboolean{mos}
-%\setboolean{mos}{true}%annexes
-\setboolean{mos}{false}% pas de annexes
-
-\usepackage{aeguill} %guillemets
-
-%% fancy header & foot
-\pagestyle{fancy}
-\lhead{[ELEC-H-310] Électronique numérique\\ \tpnumber}
-\rhead{\mydate\today\\ page \thepage}
-\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
-\cfoot{}
-%%
-
 \pdfinfo{
-/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
+/Author (ULB -- BEAMS)
 /Title (\tpnumber, ELEC-H-310)
 /ModDate (D:\pdfdate)
 }
 
 \hypersetup{
 pdftitle={\tpnumber [ELEC-H-310] Choucroute numérique},
-pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdfauthor={ULB -- BEAMS},
 pdfsubject={}
 }
 
 \theoremstyle{definition}% questions pas en italique
 \newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
 
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
 \newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
-	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+	\ifthenelse {\boolean{corrige}} {\fr{\paragraph{Réponse :}}\en{\paragraph{Answer:}} \color{darkblue}   #1\color{black}} {}
+ }
+
+ \newcommand{\fr}[1]{
+ 	\ifthenelse {\boolean{fr}} {#1} {}
+ }
+
+ \newcommand{\en}[1]{
+ 	\ifthenelse {\boolean{en}} {#1} {}
  }
 
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
 
-\date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm} \tpnumber\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] \fr{Électronique numérique}\en{Digital Electronics}\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{\fr{Corrigé}\en{Correction}}{}}
+\cfoot{}
+%%
 
 \setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
 \setlength{\parindent}{0pt}
 
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber\\ \fr{Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}%
+\en{Digital Electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}%
+}
+
+
+
+
 \begin{document}
-\pagestyle{empty}
+\fr{\selectlanguage{french}}
+\en{\selectlanguage{english}}
+
 \maketitle
 \vspace*{-1cm}
 
 \begin{Q}
-	Convertir dans les autres bases utiles les nombres suivants :
+	\fr{Convertir dans les autres bases utiles les nombres suivants :}
+	\en{Convert the following number in the relevant bases:}
 	\begin{enumerate}
 	\item $(82)_{10}$
 	\item $(122)_{10}$
@@ -126,26 +195,27 @@ pdfsubject={}
 \end{Q}
 
 \begin{Q}
-Effectuer l’addition suivante dans toutes les bases utiles. Vérifier les résultats en
-les convertissant en base 10 :
+\fr{Effectuer l’addition suivante dans toutes les bases utiles. Vérifier les résultats en
+les convertissant en base 10 :}
+\en{Compute this addition in all relevant bases. Check your results by converting them in base 10.}
 $$(3633)_{10} + (254)_{10}$$
 
 \reponse{~\\
-	Base 2~:
+	Base 2:
 	\begin{tabular}{ccccccccccccc}
 		& 1 & 1 & 1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 \\
 		+ & &   &   &   & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0\\ \hline
 		& 1 & 1 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
 	\end{tabular}
 
-	Base 8~:
+	Base 8:
 	\begin{tabular}{ccccc}
 		  & 7 & 0 & 6 & 1 \\
 		+ &   & 3 & 7 & 6 \\ \hline
 		  & 7 & 4 & 5 & 7 \\
 		\end{tabular}
 
-	Base 16~:
+	Base 16:
 	\begin{tabular}{cccc}
 		& E & 3 & 1 \\
 		+ & & F & E \\ \hline
@@ -156,18 +226,22 @@ $$(3633)_{10} + (254)_{10}$$
 
 
 \begin{Q}
-Représentation des nombres négatifs
+\fr{Représentation des nombres négatifs}
+\en{Negative numbers representation}
 \begin{enumerate}
-	\item Représenter $(-14)_{10}$ sur 8 bits en base 2 dans les 3 modes de représentation.
+	\item \fr{Représenter $(-14)_{10}$ sur 8 bits en base 2 dans les trois modes de représentation.}
+	\en{Represent $(-14)_{10}$ on 8 bits in base 2 in all three representations.}
 	\reponse{
 		\begin{tabular}{|c|c|c|}\hline
 			SVA & C1 & C2 \\ \hline
 			10001110 & 11110001 & 11110010 \\ \hline
 		\end{tabular}
 	}
-	\item Si on utilise 4 bits, quels sont, dans les 3 modes de représentation, les plus
+	\item \fr{Si on utilise 4 bits, quels sont, dans les 3 modes de représentation, les plus
 	petites et les plus grandes valeurs représentables ? Comment se représente la
-	valeur 0 ?
+	valeur 0 ?}
+	\en{If we use 4 bits, what are the highest and lowest values possible, in all three representations?
+	How is represented the value 0?}
 	\reponse{
 		\begin{center}
 			\begin{tabular}{|c|c|c|c|}\hline
@@ -180,7 +254,8 @@ Représentation des nombres négatifs
 			\end{tabular}
 		\end{center}
 
-		À titre de bonus, ci-suit un tableau comparatif des différents modes de représentation (sur 4 bits)~:
+		\fr{À titre de bonus, ci-suit un tableau comparatif des différents modes de représentation (sur 4 bits):}
+		\en{As a bonus, here is the full table comparing the three representations.}
 		\begin{center}
 			\begin{tabular}{|c|c|c|c|} \hline
 				Base 10 & Signé & C1 & C2 \\ \hline
@@ -210,7 +285,8 @@ Représentation des nombres négatifs
 
 
 \begin{Q}
-	En utilisant les axiomes prouver les théorèmes :
+\fr{En utilisant les axiomes prouver les théorèmes :}
+\en{Proove the theorems using the axioms.}
 
 \begin{minipage}[t]{0.5\linewidth}
 	\centering Axiomes :
