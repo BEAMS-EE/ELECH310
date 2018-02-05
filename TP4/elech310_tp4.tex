@@ -1,47 +1,74 @@
-\documentclass[11pt,a4paper,dvipsnames,]{article}
+\documentclass[11pt,a4paper,dvipsnames]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsthm} %numéroter les questions
-\usepackage[frenchb]{babel}
+\usepackage[frenchb,english]{babel}
 \usepackage{datetime}
 \usepackage{xspace} % typographie IN
 \usepackage{hyperref}% hyperliens
 \usepackage[all]{hypcap} %lien pointe en haut des figures
 \usepackage[french]{varioref} %voir x p y
 \usepackage{fancyhdr}% en têtes
-%\input cyracc.def
 \usepackage{graphicx} %include pictures
 \usepackage{pgfplots}
 
 \usepackage{tikz}
 \usetikzlibrary{calc,arrows,automata}
 \usetikzlibrary{babel}
-% \usetikzlibrary{circuits.logic.US,circuits.logic.IEC}
 \usepackage{circuitikz}
 % \usepackage{gnuplottex}
 \usepackage{float}
 \usepackage{ifthen}
 
-\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
 \usepackage[]{pdfpages}
-
 \usepackage[]{attachfile}
 
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+\usepackage{bigdelim}%Braces in tabular
 
+\usepackage{aeguill} %guillemets
 \usepackage{askmaps}
-% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage[]{xcolor}
 \usepackage{colortbl}
 
-\usepackage{multirow}
 
-\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'correction'
+%	- 'fr', controlled by defining the variable 'french'
+%	- 'en', controlled by defining the variable 'english'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="elech310_tp1_fr" "\def\french{} \input{elech310_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%cyr
-\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+%Numero du TP :
+\def \tpnumber {TP 4 }
+
+\newcommand{\version}{v1.0.0}
 
 
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
 \newboolean{corrige}
 \ifx\correction\undefined
 \setboolean{corrige}{false}% pas de corrigé
@@ -49,63 +76,97 @@
 \setboolean{corrige}{true}%corrigé
 \fi
 
-%\setboolean{corrige}{false}% pas de corrigé
+\newboolean{fr}
+\ifx\french\undefined
+\setboolean{fr}{false}% pas de corrigé
+\else
+\setboolean{fr}{true}%corrigé
+\fi
 
-\newboolean{annexes}
-\setboolean{annexes}{true}%annexes
-%\setboolean{annexes}{false}% pas de annexes
+\newboolean{en}
+\ifx\english\undefined
+\setboolean{en}{false}% pas de corrigé
+\else
+\setboolean{en}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
 
 \definecolor{darkblue}{rgb}{0,0,0.5}
 
-\newboolean{mos}
-%\setboolean{mos}{true}%annexes
-\setboolean{mos}{false}% pas de annexes
-
-\usepackage{aeguill} %guillemets
-
-%% fancy header & foot
-\pagestyle{fancy}
-\lhead{[ELEC-H-310] Électronique numérique\\ TP 4}
-\rhead{\mydate\today\\ page \thepage}
-\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
-\cfoot{}
-%%
-
 \pdfinfo{
-/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
-/Title (TP 4, ELEC-H-310)
+/Author (ULB -- BEAMS)
+/Title (\tpnumber, ELEC-H-310)
 /ModDate (D:\pdfdate)
 }
 
 \hypersetup{
-pdftitle={TP 4 [ELEC-H-310] Choucroute numérique},
-pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdftitle={\tpnumber [ELEC-H-310] Choucroute numérique},
+pdfauthor={ULB -- BEAMS},
 pdfsubject={}
 }
 
 \theoremstyle{definition}% questions pas en italique
 \newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
 
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
 \newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
-	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+	\ifthenelse {\boolean{corrige}} {\fr{\paragraph{Réponse :}}\en{\paragraph{Answer:}} \color{darkblue}   #1\color{black}} {}
+ }
+
+ \newcommand{\fr}[1]{
+ 	\ifthenelse {\boolean{fr}} {#1} {}
+ }
+
+ \newcommand{\en}[1]{
+ 	\ifthenelse {\boolean{en}} {#1} {}
  }
 
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
-
-\date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm} TP 4\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
-
-\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
-\setlength{\parindent}{0pt}
-
-% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
-\usepackage{enumitem}
-\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
 
 \newlength{\gvs}% Gate Vertical Space
 \gvs=6em
 \newlength{\ghs}% Gate Horizontal Space
 \ghs=10em
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] \fr{Électronique numérique}\en{Digital Electronics}\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{\fr{Corrigé}\en{Correction}}{}}
+\cfoot{}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber\\ \fr{Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}%
+\en{Digital Electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}%
+}
+
 
 \begin{document}
 \pagestyle{empty}
@@ -113,8 +174,10 @@ pdfsubject={}
 \vspace*{1cm}
 
 \begin{Q}
-	Quelles sont les équations logiques correspondant à ce schéma~?
-	Dresser la table de Huffman et en déduire les graphes d'état.
+	\fr{Quelles sont les équations logiques correspondant à ce schéma~?
+	Dressez la table de Huffman et déduisez-en les graphes d'état.}
+	\en{What are the logic equations for this circuit?
+	Fill a Huffman table and find the corresponding state graph.}
 	\begin{enumerate}
 		\item ~\\
 		\begin{center}
@@ -372,7 +435,7 @@ pdfsubject={}
 \end{Q}
 
 \begin{Q}
-	Un ouvre-porte est muni d'un code secret commandé par deux boutons poussoirs $a$ et $b$.
+	\fr{Un ouvre-porte est muni d'un code secret commandé par deux boutons poussoirs $a$ et $b$.
 	On considère que la variable liée à chaque bouton vaut 1 quand le bouton est enfoncé, et 0 quand il est relâché.
 	$Z_1$ est la sortie qui, si elle vaut 1, commande l'ouvre-porte.
 	Il n'est pas nécessaire que cette sortie reste à 1 pour qu'on puisse ouvrir la porte~; on peut imaginer qu'à l'instant où l'ouvre-porte est activé (lorsque le dernier bouton de la combinaison est enfoncé), la porte peut être librement ouverte pendant une courte période de temps.
@@ -381,7 +444,17 @@ pdfsubject={}
 	Cette dernière reste activée peu importe l'état des variables d'entrée et nécessite donc qu'on réinitialise le système.
 	Une fois le code entré, relâcher les deux boutons renvoie le système dans son état initial.
 
-	Établir le graphe d'état et la table de Huffman correspondant à ce problème.
+	Établissez le graphe d'état et la table de Huffman correspondant à ce problème.}
+	
+	\en{A door opener is controlled by a password that is controlled using two buttons $a$ and $b$.
+	We assume that the value associated to each button equals 1 when the button is pressed, 0 otherwise.
+	The door is being opened if the output $Z_1$ is set to 1, which happens whenever the last button of the password is pressed.
+	The code is the following: press and release $a$ two times, then press and release $b$ and finaly press and release $a$ again.
+	Any wrong sequence sets the output $Z_2$ to 1, triggering the alarm.
+	Once activated, the alarm stays active whatever the input.
+
+	Build the state graph and Huffman table for this problem.
+	}
 	\reponse{
 		\begin{center}
 			\begin{tabular}{|l|l|l|l|l|l|l|} \hline
@@ -450,65 +523,16 @@ pdfsubject={}
 		\end{tikzpicture}
 		\end{center}
 
-		Notez que lorsque l'on se trouve sur l'état \texttt{9}, l'état est stable pour toute les entrées. Afin de ne pas surcharger le graphe, les rétroactions sur l'état \texttt{9} ont donc été omises.
+		\fr{Notez que lorsque l'on se trouve sur l'état \texttt{9}, l'état est stable pour toute les entrées. Afin de ne pas surcharger le graphe, les rétroactions sur l'état \texttt{9} ont donc été omises.}
+
+		\en{The state \texttt{9} is stable for all inputs. The retroaction loops have been omitted to keep the graph light, though}
 	}
 \end{Q}
 
-% \begin{Q}
-% 	Construire la table des conditions d'équivalence pour la table de Huffman suivante.
-% 	\begin{center}
-% 		\begin{tabular}{|l|l|l|l|l|l|} \hline
-% 			& \multicolumn{4}{c}{$ab$} & \\ \hline
-% 			1 & \textbf{1} & 2 & 3 & 10 & 00 \\ \hline
-% 			2 & 7 & \textbf{2} & 9 & 4 & 11 \\ \hline
-% 			3 & 7 & 6 & \textbf{3} & 4 & 10 \\ \hline
-% 			4 & 7 & 2 & 5 & \textbf{4} & 01 \\ \hline
-% 			5 & 11 & 8 & \textbf{5} & 12 & 10 \\ \hline
-% 			6 & 11 & \textbf{6} & 5 & 10 & 11 \\ \hline
-% 			7 & \textbf{7} & 8 & 5 & 4 & 00 \\ \hline
-% 			8 & 1 & \textbf{8} & 3 & 4 & 11 \\ \hline
-% 			9 & 7 & 8 & \textbf{9} & 12 & 10 \\ \hline
-% 			10 & 11 & 6 & 9 & \textbf{10} & 01 \\ \hline
-% 			11 & \textbf{11} & 8 & 9 & 10 & 00 \\ \hline
-% 			12 & 7 & 2 & 5 & \textbf{12} & 11 \\ \hline
-% 		\end{tabular}
-% 	\end{center}
-% 	\reponse{
-% 		\begin{center}
-% 			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|} \hline%\cellcolor{green!25}
-% 				2 & x &  &  &  &  &  &  &  &  &  & \\ \hline
-% 				3 & x & x &  &  &  &  &  &  &  &  & \\ \hline
-% 				4 & x & x & x &  &  &  &  &  &  &  & \\ \hline
-% 				\multirow{3}{*}{5} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{red!25}7-11; & \multirow{3}{*}{x} &  &  &  &  &  &  & \\
-% 				 &  &  & \cellcolor{red!25}6-8; &  &  &  &  &  &  &  & \\
-% 				 &  &  & \cellcolor{red!25}4-12 &  &  &  &  &  &  &  & \\ \hline
-% 				% 5 & x & x & \cellcolor{red!25}7-11;\\6-8; & x &  &  &  &  &  &  & \\ \hline
-% 				\multirow{3}{*}{6} & \multirow{3}{*}{x} & \cellcolor{green!25}7-11; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} &  &  &  &  &  & \\
-% 				 &  & \cellcolor{green!25}5-9; &  &  &  &  &  &  &  &  & \\
-% 				 &  & \cellcolor{green!25}4-10 &  &  &  &  &  &  &  &  & \\ \hline
-% 				\multirow{3}{*}{7} & \cellcolor{red!25}2-8; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} &  &  &  &  & \\
-% 				 & \cellcolor{red!25}4-10 &  & & &  &  &  &  &  &  & \\
-% 				 & \cellcolor{red!25} & & & &  &  &  &  &  &  & \\ \hline
-% 				\multirow{3}{*}{8} & \multirow{3}{*}{x}  & \cellcolor{red!25}1-7; & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \cellcolor{red!25}7-11; & \multirow{3}{*}{x}  &  &  &  & \\
-% 				& x & \cellcolor{red!25}3-9 & & & & \cellcolor{red!25}3-5; & &  &  &  & \\
-% 				& x & \cellcolor{red!25} & & & & \cellcolor{red!25}4-10 & &  &  &  & \\ \hline
-% 				\multirow{2}{*}{9} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{red!25}6-8; & \multirow{2}{*}{x} & \cellcolor{green!25}7-11; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} &  &  & \\
-% 				 &  &  & \cellcolor{red!25}4-12 &  & \cellcolor{green!25} &  &  &  &  &  & \\ \hline
-% 				10 & x & x & x & \cellcolor{green!25}7-11; & x & x & x & x & x &  & \\ \hline
-% 				\multirow{2}{*}{11} & \cellcolor{red!25}2-8; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{green!25}5-9; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \\
-% 				 & \cellcolor{red!25}3-9 &  &  &  &  &  & \cellcolor{green!25}4-10; &  &  &  & \\ \hline
-% 				12 & \multirow{4}{*}{x} & \cellcolor{red!25}5-9; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \cellcolor{red!25}11-7; & \multirow{4}{*}{x} & \cellcolor{red!25}1-7; & \multirow{4}{*}{x} & \multirow{4}{*}{x} & \multirow{4}{*}{x} \\
-% 				 &  & \cellcolor{red!25}4-12 &  &  &  & \cellcolor{red!25}10-12; &  & \cellcolor{red!25}2-8; &  &  &  \\
-% 				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25}2-6 &  & \cellcolor{red!25}3-5; &  &  &  \\
-% 				 &  & \cellcolor{red!25} &  &  &  & \cellcolor{red!25} &  & \cellcolor{red!25}4-12 &  &  &  \\ \hline
-% 				 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline
-% 			\end{tabular}
-% 		\end{center}
-% 	}
-% \end{Q}
 \begin{Q}
-Utiliser une K-map pour simplifier l'équation suivante :\\
-$f(a,b,c,d,e)=\sum_{m}(0,2,5,7,8,9,10,11,13,23,26,27,29)+\sum_{d}(3,12,15,18,19,21,22,31)$
+\fr{Utilisez une K-map pour simplifier l'équation suivante :}
+\en{Use a K-map to simplify the following equation:}
+\[f(a,b,c,d,e)=\sum_{m}(0,2,5,7,8,9,10,11,13,23,26,27,29)+\sum_{d}(3,12,15,18,19,21,22,31)\]
 	\reponse{
 		\begin{center}
 			\askmapv{$F = \overline{ace} + ce + \overline{a}b\overline{c} + \overline{c}d$}{abcde}{}{101-01011111-10-00--0--10011010-}{%
@@ -529,4 +553,9 @@ $f(a,b,c,d,e)=\sum_{m}(0,2,5,7,8,9,10,11,13,23,26,27,29)+\sum_{d}(3,12,15,18,19,
 
 \end{Q}
 
+\vfill
+\footnotesize{
+\en{Found an error? Let us know: \url{https://github.com/BEAMS-EE/ELECH310/issues}}
+\fr{Une erreur ? Dites-le-nous : \url{https://github.com/BEAMS-EE/ELECH310/issues}}
+}
 \end{document}

@@ -1,30 +1,20 @@
 all: labo correction
-#	labo
-#	correction
 	echo "done"
 
 
 labo: *.tex
-	#cd Figures; ./crop.sh;cd ..
-	# cd figures; make;cd ..
-	# cd mesures; make;cd ..
-	#cp ~/Documents/SIES2013add.bib .
-	pdflatex -shell-escape -jobname="elech310_tp4" elech310_tp4.tex
-	#bibtex SIES_2013_YAllard.aux
-	#pdflatex labo_diodes_corr.tex
-	pdflatex -shell-escape -jobname="elech310_tp4" elech310_tp4.tex
+	pdflatex -shell-escape -jobname="elech310_tp4_fr" "\def\french{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname="elech310_tp4_fr" "\def\french{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname="elech310_tp4_en" "\def\english{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname="elech310_tp4_en" "\def\english{} \input{elech310_tp4.tex}"
 
 
 correction: *.tex
-	#cd Figures; ./crop.sh;cd ..
-	# cd figures; make;cd ..
-	# cd mesures; make;cd ..
-	#cp ~/Documents/SIES2013add.bib .
-	pdflatex -shell-escape -jobname=elech310_tp4_correction "\def\correction{} \input{elech310_tp4.tex}"
-	#bibtex SIES_2013_YAllard.aux
-	#pdflatex labo_diodes_corr.tex
-	pdflatex -shell-escape -jobname=elech310_tp4_correction "\def\correction{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname=elech310_tp4_fr_correction "\def\correction{} \def\french{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname=elech310_tp4_fr_correction "\def\correction{} \def\french{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname=elech310_tp4_en_correction "\def\correction{} \def\english{} \input{elech310_tp4.tex}"
+	pdflatex -shell-escape -jobname=elech310_tp4_en_correction "\def\correction{} \def\english{} \input{elech310_tp4.tex}"
 
 clean:
-	rm -f elech310_tp4_correction.pdf rm elech310_tp4.pdf
+	rm -f elech310_tp4_fr_correction.pdf rm elech310_tp4_fr.pdf elech310_tp4_en_correction.pdf rm elech310_tp4_en.pdf
 	rm -f *.idx *.aux *.log *.nav *.out *.snm *.toc
