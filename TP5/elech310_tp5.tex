@@ -2,50 +2,73 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsthm} %numéroter les questions
-\usepackage[frenchb]{babel}
+\usepackage[frenchb,english]{babel}
 \usepackage{datetime}
 \usepackage{xspace} % typographie IN
-\usepackage{hyperref}% hyperliensti
+\usepackage{hyperref}% hyperliens
 \usepackage[all]{hypcap} %lien pointe en haut des figures
 \usepackage[french]{varioref} %voir x p y
 \usepackage{fancyhdr}% en têtes
-%\input cyracc.def
 \usepackage{graphicx} %include pictures
 \usepackage{pgfplots}
 
 \usepackage{tikz}
-\usetikzlibrary{calc}
+\usetikzlibrary{calc,arrows,automata}
 \usetikzlibrary{babel}
-% \usetikzlibrary{circuits.logic.US,circuits.logic.IEC}
 \usepackage{circuitikz}
 % \usepackage{gnuplottex}
 \usepackage{float}
 \usepackage{ifthen}
 
-\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
 \usepackage[]{pdfpages}
-
 \usepackage[]{attachfile}
 
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+\usepackage{bigdelim}%Braces in tabular
 
+\usepackage{aeguill} %guillemets
 \usepackage{askmaps}
-% \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage[]{xcolor}
 \usepackage{colortbl}
 
-\usepackage{multirow}
 
-\newcommand\encircle[1]{%http://tex.stackexchange.com/questions/123924/indexed-letters-inside-circles
-  \tikz[baseline=(X.base)] 
-    \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'correction'
+%	- 'fr', controlled by defining the variable 'french'
+%	- 'en', controlled by defining the variable 'english'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="elech310_tp1_fr" "\def\french{} \input{elech310_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newdateformat{mydate}{2016--2017}%hack pour remplacer \THEYEAR
+%Numero du TP :
+\def \tpnumber {TP 5 }
 
-%cyr
-\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+\newcommand{\version}{v1.0.0}
 
 
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
 \newboolean{corrige}
 \ifx\correction\undefined
 \setboolean{corrige}{false}% pas de corrigé
@@ -53,75 +76,121 @@
 \setboolean{corrige}{true}%corrigé
 \fi
 
-%\setboolean{corrige}{false}% pas de corrigé
+\newboolean{fr}
+\ifx\french\undefined
+\setboolean{fr}{false}% pas de corrigé
+\else
+\setboolean{fr}{true}%corrigé
+\fi
 
-\newboolean{annexes}
-\setboolean{annexes}{true}%annexes
-%\setboolean{annexes}{false}% pas de annexes
+\newboolean{en}
+\ifx\english\undefined
+\setboolean{en}{false}% pas de corrigé
+\else
+\setboolean{en}{true}%corrigé
+\fi
+
+%\setboolean{corrige}{false}% pas de corrigé
 
 \definecolor{darkblue}{rgb}{0,0,0.5}
 
-\newboolean{mos}
-%\setboolean{mos}{true}%annexes
-\setboolean{mos}{false}% pas de annexes
-
-\usepackage{aeguill} %guillemets
-
-%% fancy header & foot
-\pagestyle{fancy}
-\lhead{[ELEC-H-310] Électronique numérique\\ TP 5}
-\rhead{\mydate\today\\ page \thepage}
-\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
-\cfoot{}
-%%
-
 \pdfinfo{
-/Author (Quentin Delhaye, Ken Hasselmann, ULB -- BEAMS)
-/Title (TP 5, ELEC-H-310)
+/Author (ULB -- BEAMS)
+/Title (\tpnumber, ELEC-H-310)
 /ModDate (D:\pdfdate)
 }
 
 \hypersetup{
-pdftitle={TP 5 [ELEC-H-310] Choucroute numérique},
-pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
+pdftitle={\tpnumber [ELEC-H-310] Choucroute numérique},
+pdfauthor={ULB -- BEAMS},
 pdfsubject={}
 }
 
 \theoremstyle{definition}% questions pas en italique
 \newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
 
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
 \newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
-	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} \color{darkblue}   #1\color{black}} {}
+	\ifthenelse {\boolean{corrige}} {\fr{\paragraph{Réponse :}}\en{\paragraph{Answer:}} \color{darkblue}   #1\color{black}} {}
+ }
+
+ \newcommand{\fr}[1]{
+ 	\ifthenelse {\boolean{fr}} {#1} {}
+ }
+
+ \newcommand{\en}[1]{
+ 	\ifthenelse {\boolean{en}} {#1} {}
  }
 
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
-
-\date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm} TP 5\\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
-
-\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
-\setlength{\parindent}{0pt}
-
-% \renewcommand{\theenumi}{\alph{enumi}} % Change the 'enumerate' format to use letters.
-\usepackage{enumitem}
-\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
 
 \newlength{\gvs}% Gate Vertical Space
 \gvs=6em
 \newlength{\ghs}% Gate Horizontal Space
 \ghs=10em
 
+\newcommand\encircle[1]{%http://tex.stackexchange.com/questions/123924/indexed-letters-inside-circles
+  \tikz[baseline=(X.base)] 
+    \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-310] \fr{Électronique numérique}\en{Digital Electronics}\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{\fr{Corrigé}\en{Correction}}{}}
+\cfoot{}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber\\ \fr{Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}%
+\en{Digital Electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}%
+}
+
+
+
+
+
 \begin{document}
-\pagestyle{empty}
 \maketitle
 \vspace*{1cm}
 
 \begin{Q}
-Un système de traitement d'image fournit des points (pixels) à quatre niveaux de gris~: $ab = 00, 01, 10, 11$ (respectivement noir, foncé, clair et blanc).
+\fr{Un système de traitement d'image fournit des points (pixels) à quatre niveaux de gris~: $ab = 00, 01, 10, 11$ (respectivement noir, foncé, clair et blanc).
 On veut construire un automate qui reçoit les valeurs de $ab$ en séquence, ligne après ligne, et met à $1$ une sortie $Z$ lorsqu'il détecte la fin d'une rampe montante ou descendante complète~: $00-01-10-11$ ou $11-10-01-00$.
 On fera l'hypothèse simplificatrice que deux pixels successifs n'auront jamais la même valeur.
 
-Dresser la table de Huffman de ce problème.
+Dresser la table de Huffman de ce problème.}
+
+\en{An image processing system gives us pixels with four levels of grey: $ab = 00, 01, 10, 11$ (respectively black, dark, light and white).
+We want to build a machine that gets those $ab$ values and sets its output $Z$ to 1 whenever it detects the end of a full ascending or descending sequence: $00-01-10-11$ or $11-10-01-00$.
+We can simplify this problem by assuming that two successive pixels will never have the same value.
+
+Build the Huffman table of this machine.}
 
 \reponse{
 	\begin{center}
@@ -143,30 +212,9 @@ Dresser la table de Huffman de ce problème.
 }
 \end{Q}
 
-% \begin{Q}
-% Dans la table des états de Huffman suivante~:
-% \begin{center}
-% 	\begin{tabular}{|l|l|l|l|l|l|} \hline
-% 		& \multicolumn{4}{c}{$ab$} & \\ \hline
-% 		& 00 & 01 & 11 & 10 & $Z$ \\ \hline
-% 		1 & \textbf{1} & \textbf{1} & 3 & - & 0 \\ \hline
-% 		2 & \textbf{2} & \textbf{2} & 3 & 4 & 1 \\ \hline
-% 		3 & 2 & 1 & \textbf{3} & \textbf{3} & 1 \\ \hline
-% 		4 & 1 & - & \textbf{4} & \textbf{4} & 0 \\ \hline
-% 	\end{tabular}
-% \end{center}
-% \begin{enumerate}
-% 	\item Trouver un codage n'offrant pas de problème de course.
-% 	Déterminer les fonctions de rétroactions $Y_1$ et $Y_2$.
-
-% 	\item Résoudre les problèmes de course critique si le codage~: $1=00$, $2=01$, $3=11$ et $4=10$ est imposé.
-% 	Donner les expressions pour les nouveaux $Y_1$ et $Y_2$.
-% \end{enumerate}
-% \end{Q}
-
 
 \begin{Q}
-	Deux loutres mutantes attaquent Metropolis.
+	\fr{Deux loutres mutantes attaquent Metropolis.
 	Superman est le seul à pouvoir sauver la ville.
 	Les terribles mustélidés sont cependant particulièrement résistants et Superman décide de quérir l'aide du Dr Hamilton pour les vaincre.
 	Ce dernier lui donne alors une table de Huffman sur la sequence de pouvoirs à utiliser pour triompher ($Z_1$).
@@ -176,7 +224,19 @@ Dresser la table de Huffman de ce problème.
 		$a$~: vision laser~; $b$~: souffle glacé~; $Z_1$~: loutres vaincues~; $Z_2$~: loutres invulnérables.
 	\end{verse}
 
-	Que doit faire Superman pour sauver Metropolis des loutres infernales~?
+	Que doit faire Superman pour sauver Metropolis des loutres infernales~?}
+
+	\en{Two evil weasels are attacking Metropolis.
+	Superman is the only one who can save the town.
+	However, the dreadful Mustelida are tough and Superman decides to ask Dr Hamilton for help.
+	The professor thus gives him a Huffman table explaining the sequence of power required to triumph.
+	Deceitfully, he also includes a sequence that would turn the weasels into immortal fire breathing monsters.
+	The following instructions are added:
+	\begin{verse}
+		$a$: laser vision; $b$: ice breath; $Z_1$: weasels defeated; $Z_2$: invulnerable weasels.
+	\end{verse}
+
+	What does Superman need to do in order to save Metropolis?}
 
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|c|c|} \hline
@@ -193,21 +253,33 @@ Dresser la table de Huffman de ce problème.
 	\end{center}
 
 	\reponse{
-		Si Superman veut éliminer ces perfides créatures, il devra d'abord les geler à l'aide de son souffle, puis les brûler avec son regard de Kryptonien et finalement les geler à nouveau.
+		\fr{Si Superman veut éliminer ces perfides créatures, il devra d'abord les geler à l'aide de son souffle, puis les brûler avec son regard de Kryptonien et finalement les geler à nouveau.}
+		\en{If Superman aims at defeating the creatures, he will first need to freeze them using his breath, then burn them with his Kryptonian glare and finaly freeze them back.}
 	}
 \end{Q}
 
 \begin{Q}
-	Selon une légende créée spécialement pour ce TP, jaloux du succès du code Konami\footnote{$\uparrow \uparrow \downarrow \downarrow \leftarrow \rightarrow \leftarrow \rightarrow$ \encircle{B} \encircle{A}}, Nintendo aurait implémenté un code similaire dans ses jeux développés sur NES.
+	\fr{Selon une légende créée spécialement pour ce TP, jaloux du succès du code Konami\footnote{$\uparrow \uparrow \downarrow \downarrow \leftarrow \rightarrow \leftarrow \rightarrow$ \encircle{B} \encircle{A}}, Nintendo aurait implémenté un code similaire dans ses jeux développés sur NES.
 	Le «~code Nintendo~» serait cependant plus simple~: pour activer une fonctionnalité cachée du jeu, il suffirait d'appuyer sur le bouton \encircle{A}, puis d'appuyer sur \encircle{B} en maintenant \encircle{A} enfoncé et enfin d'appuyer sur \framebox{\textsc{select}} toujours en maintenant les deux premiers boutons enfoncés.
 	Si l'un des boutons est relâché ou enfoncé dans le mauvais ordre, la séquence est annulée.
 
-	Dresser le circuit logique du code permettant d'activer le bonus.
+	Dressez le circuit logique du code permettant d'activer le bonus.}
+
+	\en{According to a legend created for this session, envious of the Konami code\footnote{$\uparrow \uparrow \downarrow \downarrow \leftarrow \rightarrow \leftarrow \rightarrow$ \encircle{B} \encircle{A}} success, Nintendo would have implemented a similar feature in his NES games.
+	The ``Nintendo code" is simpler though: in order to activate a hidden bonus, the player simply needs to press \encircle{A}, then \encircle{B} while maintaining \encircle{A} and finaly to press \framebox{\textsc{select}} while still holding the first two buttons down.
+	If one of the buttons is released, or if they are pressed in the wrong order, the sequence is canceled.
+
+	Build a digital circuit implementing this feature.}
 
 	\reponse{
-		Afin de pouvoir créer le circuit logique, il convient d'abord de remplir la table de Huffman décrivant la séquence de boutons, et en dériver les équations logiques.
+		\fr{Afin de pouvoir créer le circuit logique, il convient d'abord de remplir la table de Huffman décrivant la séquence de boutons, et en dériver les équations logiques.
 
-		En considérant que la touche \framebox{select} est représentée par la variable $c$, on obtient~:
+		En considérant que la touche \framebox{select} est représentée par la variable $c$, on obtient~:}
+
+		\en{To build the circuit, we first need to fill a Huffman table describing the code sequence, and to find the corresponding logical equations.
+
+		If we replace the button \framebox{select} by the variable $c$, we get:}
+
 		\begin{center}
 			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}\hline
 			& \multicolumn{8}{c|}{$abc$} & \\ \hline
@@ -219,7 +291,8 @@ Dresser la table de Huffman de ce problème.
 			\end{tabular}
 		\end{center}
 
-		On en déduit les k-maps suivantes~:
+		\fr{On en déduit les k-maps suivantes~:}
+		\en{Which gives us the following K-maps:}
 		\begin{center}
 			\askmapv{$Y_1 = abcy_1 + ab\overline{c}y_2$}{a b c $y_1$ $y_2$}{}{00000000000000000000000001010011}{%
 			\color{red}\put(6.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
@@ -370,5 +443,11 @@ Dresser la table de Huffman de ce problème.
 
 \end{Q}	
 
+
+\vfill
+\footnotesize{
+\en{Found an error? Let us know: \url{https://github.com/BEAMS-EE/ELECH310/issues}}
+\fr{Une erreur ? Dites-le-nous : \url{https://github.com/BEAMS-EE/ELECH310/issues}}
+}
 
 \end{document}
