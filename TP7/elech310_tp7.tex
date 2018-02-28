@@ -99,7 +99,8 @@
 
 %% fancy header & foot
 \pagestyle{fancy}
-\lhead{[ELEC-H-310] Électronique numérique\\ \tpnumber }
+%\lhead{[ELEC-H-310] Électronique numérique\\ \tpnumber }
+\lhead{[ELEC-H-310] Digital electronics\\ \tpnumber }
 \rhead{\mydate\today\\ page \thepage}
 \chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
 \cfoot{}
@@ -112,7 +113,7 @@
 }
 
 \hypersetup{
-pdftitle={\tpnumber [ELEC-H-310] Électronique numérique},
+pdftitle={\tpnumber [ELEC-H-310] Digital electronics},
 pdfauthor={Quentin Delhaye, Ken Hasselmann, ©2014 ULB -- BEAMS  },
 pdfsubject={}
 }
@@ -129,7 +130,7 @@ pdfsubject={}
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
 
 \date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm} \tpnumber \\ Électronique numérique [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+\title{\vspace{-2cm} \tpnumber \\ Digital electronics [ELEC-H-310] \ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
 
 \setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
 \setlength{\parindent}{0pt}
@@ -142,21 +143,25 @@ pdfsubject={}
 
 %Debut du TP
 \begin{Q}
-On cherche à configurer les registres d'un microcontrôleur dsPIC33 afin de brancher une LED sur la patte B1 et un bouton sur la patte A2.
-À l'aide du dossier «~Programmation d'une carte à $\mu$C~», indiquer les différentes instructions pour permettre la configuration de ces pattes et les différents registres à utiliser
-pour recevoir des données du bouton ou allumer la LED.
+% On cherche à configurer les registres d'un microcontrôleur dsPIC33 afin de brancher une LED sur la patte B1 et un bouton sur la patte A2.
+% À l'aide du dossier «~Programmation d'une carte à $\mu$C~», indiquer les différentes instructions pour permettre la configuration de ces pattes et les différents registres à utiliser
+% pour recevoir des données du bouton ou allumer la LED.
+We want to configure the registers of a dsPIC33 microcontroller in order to wire a LED to pin B1 and a button on pin A2.
+With help of the document "Programming of a $\mu$C card", indicate the different instructions needed to
+configure the relevant pins and registers in order to get information from the button and light the LED.
 
 \reponse{
 TRISBbits.TRISB1 = 0;
 TRISAbits.TRISA2 = 1;
-Pour écrire : LATB.
-Pour lire : PORTA
+write : LATB.
+read : PORTA
 
 }
 \end{Q}
 
 \begin{Q}
-Donner l'équivalent en C de cette fonction en python :
+%Donner l'équivalent en C de cette fonction en python :
+Give the C equivalent of this python function:
 \begin{minted}[linenos]{python}
 def resistor_divider(E, r1, r2):
     V = r2*E/(r1+r2)
@@ -174,13 +179,14 @@ def resistor_divider(E, r1, r2):
 \end{Q}
 
 \begin{Q}
-On cherche à allumer des LEDs les unes après les autres avec un intervalle
-de 200 ms et dans cet ordre (après la 7, on réallume la 0) (LEDs du port B du $\mu$C)
+%On cherche à allumer des LEDs les unes après les autres avec un intervalle
+%de 200 ms et dans cet ordre (après la 7, on réallume la 0) (LEDs du port B du $\mu$C)
+We want to light up some LEDs one after the other with an interval of 200ms starting from LED 0 to LED 7 and back to LED 0 (the LEDs are located in port B).
 \begin{center}
     \includegraphics[scale=0.4]{diagrampdf-crop.pdf}
 \end{center}
-Écrire le code C correspondant sans utiliser la structure conditionnelle «~if~».
-
+%Écrire le code C correspondant sans utiliser la structure conditionnelle «~if~».
+Write the corresponding C code without using the "if" struture.
 
 \ifnum\value{reponseCnt}=1
 	\begin{uC}
@@ -228,9 +234,11 @@ de 200 ms et dans cet ordre (après la 7, on réallume la 0) (LEDs du port B du 
   \newpage
 \fi
 \begin{Q}
-	Un ouvre-porte $Z_1$ est commandé par deux boutons $a$ et $b$ qu'il faut actionner dans le bon ordre sous peine de déclencher une alarme $Z_2$.
-	Celui-ci est décrit par la table de Huffman ci-dessous.
-	Implémentez l'automate correspondant en C.
+	%Un ouvre-porte $Z_1$ est commandé par deux boutons $a$ et $b$ qu'il faut actionner dans le bon ordre sous peine de déclencher une alarme $Z_2$.
+	%Celui-ci est décrit par la table de Huffman ci-dessous.
+	%Implémentez l'automate correspondant en C.
+	A gate opener $Z_1$ has two buttons that need to be triggered in the right order in order to open it.
+	Any mistake leads to an alarm.
 
 	\begin{center}
 		\begin{tabular}{|l|l|l|l|l|l|l|} \hline
