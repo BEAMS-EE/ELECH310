@@ -1,0 +1,14 @@
+void init_UART()
+{
+   	U2MODEbits.BRGH = 0;
+
+	U2BRG = 259;
+	U2MODEbits.UARTEN = 1;
+	U2STAbits.UTXEN = 1;
+}
+
+void send_UART(char c)
+{
+	while(U2STAbits.UTXBF);
+	U2TXREG = c;
+}
