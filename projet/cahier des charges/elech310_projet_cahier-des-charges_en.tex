@@ -28,7 +28,7 @@
 
 \usepackage{framed}
 
-\newdateformat{mydate}{v1.0.0}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{v1.0.1}%hack pour remplacer \THEYEAR
 
 
 \newboolean{corrige}
@@ -267,7 +267,7 @@ When no command is entered the screen should print the current temperature in th
 This screen should be refresh every seconds.
 
 Finally, the system will have to send temperature data to the PC using the serial communication.
-You will use the UART port of the dsPIC.
+You will use the UART peripheral of the dsPIC.
 The temperature should be send every seconds in the following format~: «~25.3\textbackslash n~».
 
 The python script \textit{graph.py} on the computer makes possible to visualise the data.
@@ -296,7 +296,7 @@ The python script \textit{graph.py} on the computer makes possible to visualise 
 Before starting such a project, you will have to think about the order of your actions.
 
 It is strongly advised to start by reinterpreting the specifications in the form of a functional block diagram including the basic features of the project.
-For each of these features, isolate the devices to use and make a schematic diagram of your algorithm.
+For each of these features, isolate the peripherals to use and make a schematic diagram of your algorithm.
 
 Once done, implement the project bloc by bloc.
 Start with a simple feature such as the command of the fan speed, then complete the rest of the project piece by piece.
@@ -475,7 +475,7 @@ By playing with the duty cycle, you will be able to modify the propeller speed.
 The duty cycle is then the control variable of your regulator.
 \end{framed}
 
-The dsPIC has a device to generated PWM waves~: you need to define its period then to configure a specific register to enter the duty cycle.
+The dsPIC has a peripheral to generated PWM waves~: you need to define its period then to configure a specific register to enter the duty cycle.
 
 
 
