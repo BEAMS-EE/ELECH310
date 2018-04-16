@@ -84,7 +84,7 @@ pdfsubject={}
 \newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
 
 \date{\vspace{-1.7cm}\mydate\today}
-\title{\vspace{-2cm}\labonumber \\ Électronique numérique [ELEC-H-310]\\Conception d'une régulation de refroidissement~: \\ pré-étude et alimentation de l'hélice\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+\title{\vspace{-2cm}\labonumber \\ Digital electronics [ELEC-H-310]\\Designe of a cooling control system~: \\ pre-analysis and propeller fan power supply\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
 
 %\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
 
@@ -188,23 +188,23 @@ pdfsubject={}
 % ##     ##  ##     ##      ##      
 % ########    #######       ##      
 
-\section*{But de la manipulation}
-Durant trois laboratoires, vous serez amenés à réaliser une mini-climatisation basée sur un ventilateur à hélice.
-Il vous sera également demandé de pouvoir interagir localement (clavier) avec le dispositif.
+\section*{Aims}
+During three laboratory sessions, you will have to design a small cooling control system based on a propeller fan.
+You will also have to be able to interact locally (keyboard) with this system.
 
-Lors du premier labo, vous allez dans un premier temps réaliser la pré-étude du projet afin d’isoler les différentes fonctionnalités demandées par le cahier des charges.
-Par la suite, vous mettrez en œuvre le contrôle de la vitesse de l’hélice.
+During the first lab session, you will first pre-analyse the project in order to isolate the different features required by the project specifications.
+Then, you will conceive the speed control of the propeller fan.
 
-\section*{Prérequis}
-Avant d’entrer au laboratoire, il est demandé de lire le cahier des charges du projet «~Conception d’une régulation de refroidissement~».
+\section*{Prerequisite}
+Before entering in the lab, you have to read the project specifications defined in the file «~Design of a temperature regulation system~».
 
 
-\section*{Objectifs}
-À la fin de ce laboratoire, vous devrez être capable~:
+\section*{Objectives}
+At the end of this lab session, you'll be able to~:
 \begin{itemize}
-	\item De découper un cahier des charges en sous-modules.
-	\item D'associer à chaque module des périphériques associés.
-	\item De générer une onde PWM et d'en expliquer le fonctionnement.
+	\item Slice a big amount of project specifications in submodules.
+	\item Associate to each module the adequate peripheral devices.
+	\item Generate a PWM wave and explain how it works.
 \end{itemize}
 
 
@@ -221,17 +221,15 @@ Avant d’entrer au laboratoire, il est demandé de lire le cahier des charges d
 
 
 \section{Introduction}
-Durant trois laboratoires, vous serez amenés à réaliser une mini-climatisation basée sur un ventilateur à hélice.
-Il vous sera également demandé de pouvoir interagir localement (clavier) avec le dispositif.
+During three laboratory sessions, you will have to design a small cooling control system based on a propeller fan.
+You will also have to be able to interact locally (keyboard) with this system.
 
-Lors du premier labo, vous allez dans un premier temps réaliser la pré-étude du projet afin d’isoler les différentes fonctionnalités demandées par le cahier des charges.
-Par la suite, vous mettrez en œuvre le contrôle de la vitesse de l’hélice.
+During the first lab session, you will first pre-analyse the project in order to isolate the different features required by the project specifications.
+Then, you will conceive the speed control of the propeller fan.
 
-La pré-étude a un but double~: non seulement elle permet de réinterpréter le cahier des charges en vos mots, mais elle vous force à découper le problème en sous-problèmes plus simples, ne faisant chacun intervenir qu’une petite partie des fonctionnalités du $\mu$C.
+The pre-analysis phase has a twofold objective : it helps to reinterpretate the project specifications with your words, as well as to push yourselves to slice the problem in simpler subproblems, with only for each a small amount of $\mu$C features.
 
-De plus, chacun de ces sous blocs pourra aisément être réutilisé dans d’autres projets pour peu qu’ils soient codés de sorte à être indépendants les uns des autres.
-
-
+Moreover, each of these submodule will be easy to reuse in other projects on condition that they are coded so that they are independant from each other.
 
 
 
@@ -244,19 +242,19 @@ De plus, chacun de ces sous blocs pourra aisément être réutilisé dans d’au
 % #########      ##       #######   ######     #########  
 
 
-\section{Pré-étude et réinterprétation du cahier des charges}
-Afin de simplifier la programmation, vous allez tout d’abord réinterpréter le cahier des charges~:
+\section{Preanalysis and reinterpretation of the project specifications}
+To simplify the coding, you will first reinterpretate the specifications~:
 \begin{itemize}
-	\item De manière générale, quelles sont les fonctionnalités demandées par le cahier des charges~?
+	\item Generally speaking, what are the features required by the project specifications~?
 	Exemple~: pouvoir faire tourner l’hélice à une vitesse réglable.
-	\item Pour chacune de ces fonctionnalités, répondez aux questions suivantes~:
+	\item For each of these features, answer to the following questions~:
 	\begin{itemize}
-		\item Comment l’interfaçage avec le monde extérieur est-il réalisé~?
-		Des circuits externes doivent-ils être ajoutés~?
-		\item Quelles sont les entrées et les sorties~?
-		\item Quels périphériques du $\mu$C sont utilisés (aidez-vous du guide de programmation)~?
+		\item How does the interfacing with external world work~?
+		Must external circuits be added~?
+		\item What are the inputs and outputs~?
+		\item Which $\mu$C peripheral devices are used (you may find some help in the coding guide (guide de programmation))~?
 	\end{itemize}
-	\item Réalisez un schéma bloc montrant comment ces différentes fonctionnalités interagissent.
+	\item Realise a block diagram showing how those different features interact.
 \end{itemize}
 
 
@@ -273,8 +271,8 @@ Afin de simplifier la programmation, vous allez tout d’abord réinterpréter l
 % ##     ##  #########  ########   #########  ##     ##  ########   #########  
 
 
-\section{Alimentation et réglage de la vitesse de l'hélice}
-Le premier module que vous implémenterez est le contrôle en vitesse de l'hélice, illustré par la figure~\ref{fig:helice}.
+\section{Power supply and speed control of the propeller fan}
+This first module that you have to implement is the speed control of the propeller fan, illustrated in figure~\ref{fig:helice}.
 
 \begin{figure}[H]
 \center
@@ -283,27 +281,27 @@ Le premier module que vous implémenterez est le contrôle en vitesse de l'héli
 \label{fig:helice}
 \end{figure}
 
-Pour ce faire, vous allez devoir utiliser un module nommé \textit{Output Compare -- PWM}, décrit dans l’annexe de programmation du dsPIC.
+In order to do this, you will have to use the module named \textit{Output Compare -- PWM}, described in the appendix of the dsPIC coding document.
 
-Pour rappel, le principe de la génération d’ondes carrées peut être décrit comme un timer à deux seuils~:
+As a reminder, the principle of generating a square wave can be described as being a timer with two thresholds~:
 \begin{itemize}
-	\item Au lancement du timer, la borne de sortie \texttt{OCx} est à ‘1’.
-	\item Lorsque le registre de comptage du timer atteint un premier seuil, nommé \texttt{OCxRS}, la sortie bascule à ‘0’.
-	Le timer continue à s’incrémenter.
-	\item Lorsque le registre de comptage atteint la valeur de période \texttt{PRx} , le timer retourne à zéro, et la sortie retourne à ‘1’.
+	\item When the timer starts, the ouput pin \texttt{OCx} is at ‘1’.
+	\item When the counting register of the timer reaches the first threshold, named \texttt{OCxRS}, the output turns to ‘0’.
+	The timer continues to increment.
+	\item When the counting register reaches the value of the period \texttt{PRx} , the timer returns zero and the output returns to ‘1’.
 \end{itemize}
 
-En jouant sur la valeur des deux seuils, il est possible de générer n’importe quelle onde carrée.
+By playing with the values of these two thresholds, it is possible to generate any square wave.
 
-Mode opératoire~:
+Operational mode~:
 \begin{itemize}
-	\item Lisez la section du guide de programmation concernant le générateur PWM.
-	\item Écrivez une routine permettant de générer sur une des bornes \texttt{OCx} une onde rectangulaire d’une période de 100~$\mu s$ et un rapport cyclique de 40~\%.
-	Vérifiez ces valeurs à l’oscilloscope.
-	\item Modifiez votre programme pour que cette routine se présente sous la forme d’une fonction permettant de facilement modifier le rapport cyclique sans modifier la période du signal.
-	\item Connectez les bornes d’alimentation de l’hélice au 0V-5V du protoboard, et reliez l’entrée In1 ou In2 de l’hélice à votre sortie PWM.
-	N’oubliez pas de relier les masses.
-	\item Vérifiez que l’hélice tourne bien à vitesse variable.
+	\item Read the section of the coding guide (guide de programmation) concerning the PWM generator.
+	\item Write the routine able to generate on one of the pins \texttt{OCx} a rectangular wave with a period of 100~$\mu s$ and a duty cycle of 40~\%.
+	Verify these values with an oscilloscope.
+	\item Modify your program so that this routine is presented as a function allowing to change easily the duty cycle without changing the period of the signal.
+	\item Connect the power supply pins of the propeller fan at 0V-5V of the protoboard, and connect the input In1 or In2 of the propeller fan to your PWM output.
+	Do not forget to connect your grounds together!
+	\item Check if the propeller fan rotates with a variable speed.
 \end{itemize}
 
 
@@ -319,17 +317,17 @@ Mode opératoire~:
 % ##     ##  ##     ##  ##     ###    ## ##    ##         ##    ##       ##         ##      ##     ##  ##     ##  ##         ##     ##  ##    ##   
 %  #######     #####    ##      ##     ###     #########  ##     ##      ##      ########    #######    #######   #########   #######   ##     ##  
 
-\section{Utilisation en tant que convertisseur numérique-analogique}
-La modulation PWM peut être appliquée à la conversion numérique-analogique.
+\section{PWM as a digital-to-analog converter}
+The PWM modulation can be applied to the digital-to-analog conversion.
 % Le principe de ce convertisseur est présenté sur la figure suivante.
 
-En éliminant les composantes hautes fréquences à l'aide d'un condensateur de découplage, on ne garde que la valeur moyenne du signal, à savoir $D(t) \cdot 3.3V$ , où $D(t)$ est l’évolution du rapport cyclique dans le temps\footnote{Une variante de ce principe, connue sous le nom de modulation Delta (ou Sigma Delta), est utilisée dans des convertisseurs analogique-numérique à haute résolution et basse fréquence, ainsi que dans le domaine de l’audio.}.
+By eliminating the high frequencis components with a decoupling capacitor, we only keep the mean value of the signal, that is to say $D(t) \cdot 3.3V$, where $D(t)$ is this evolution of the duty cycle over time\footnote{A variant of this principle, known as Delta modulation (or Sigme Delta), is used in analog-to-digital converters with high resolution and low frequency, as well as in the audio sector.}.
 
 \begin{itemize}
-	\item À l’aide d’un oscilloscope, analysez le spectre du signal PWM.
-	\item Sur ce spectre, repérez l’effet de la modulation.
-	\item Comment dimensionner le filtre RC afin d’éliminer la commutation~?
-	\item Déduisez-en les limites de ce principe~: peut-on convertir n’importe quel signal~?
+	\item Thanks to an oscilloscope, analyse the spectrum of the PWM signal.
+	\item In this spectrum, observe the effect of the modulation.
+	\item How to size the RC filter to eliminate the switching effect~?
+	\item Deduce the limits of this principle~: can we convert any type of signal~?
 \end{itemize}
 
 
