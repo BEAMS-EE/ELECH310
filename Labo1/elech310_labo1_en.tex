@@ -131,7 +131,7 @@ The specifications are simple: the LEDs D1-D4 must switch on when buttons SW1-SW
 \begin{itemize}
 	\item Locate the different peripherals present on the extension board and named in the appendix ``Extension PSOC'' (LEDs, push-buttons, potentiometer, analog output connected to power amplifier, etc.). To which outputs of the PSOC 
 	\item Identify which PSOC pin number connects to each LED and each switch of the extension board. 
-	\item Create a new project in PSOC creator. 
+	\item Create a new project in PSOC creator. The device you are using is a ``PSoC 5LP", ``CY8C5888L TI-LP097".
 	\item In the topDesign.cysch file, instantiate the LEDs as digital outputs (use the ``Strong Drive'' mode). When double-clicking on a component in the topDesign.cysch file, you open it's customized menu, where you can select options of the component. Similarly to the video tutorial on PSOC 101, you can add the resistors, diode and ground of the extension board as off-chip component for more clarity in your design (use the schematics in the appendix ``Extension PSOC'' for exact component values and mapping). 
 	\item In the topDesign.cysch file, instantiate the switches as digital inputs (use the ``High Impedance Digital'' mode). Again, you can add the elements of the extension board as off-chip components in your design for more clarity. 
 	\item In the projectName.cydwr file, associate each LED and each switch the appropriate PSOC pin number you identified before. 
