@@ -22,7 +22,7 @@
 
 \usepackage{float}
 
-\newdateformat{mydate}{v2.0.0}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{v2.0.1}%hack pour remplacer \THEYEAR
 
 
 \newboolean{corrige}
@@ -95,6 +95,8 @@ To implement it, you must understand the functioning of the analog-to-digital co
 
 \section*{Prerequisite}
 Before the lab, we advise you to read sections\ref{sec:intro} and \ref{sec:predet} of this lab. Also watch the tutorial on interrupts on \url{https://www.cypress.com/video-library/PSoC-Software/psoc-101-lesson-3-interrupts/387711}. 
+
+Also make sure to \textbf{bring} some 3.5mm jack \textbf{headphones} in order to listen to what you will be programming.
 
 \section*{Predeterminations}
 You are asked to answer exercices of section\ref{sec:predet}.
@@ -212,7 +214,7 @@ In our case, we will simply generate a sine wave at adjustable frequency: the pr
 	\item During the configuration of your peripherals (before the infinite loop), fill the wave vector (of length 100) defined as global variable so that it contains one full period of a sine wave defined between -1 and +1.
     To do so, you must:
 	\begin{itemize}
-		\item include the file math.h in the header;
+		\item include the file math.h in the header (you also need to add it in the linker settings, see Figure~\ref{fig:linker});
 		\item call function sin(), that takes as argument a floating number representing the angle (in rad) and that also returns a floating number.
 	\end{itemize}
 	\item Program a timer so that a sample of the sine wave is processed every 50$\mu$s
@@ -221,6 +223,13 @@ In our case, we will simply generate a sine wave at adjustable frequency: the pr
 	\item In your firmware code (i.e. the main.c file), poll the timer to detect timer overflows (as done in the previous lab). Every 50$\mu$s, write the next value of the sine wave vector to the DAC by using the appropriate command (that you can find in the VDAC datasheet Application Programming Interface). Note that the DAC expect to see an 8-bit signal (i.e. between 0 and 255), so you should shift (center around 128) and scale (amplitude between 0 and 128) your sine wave so that it remains within this range at all times. Don't forget to start your DAC before the infinite loop! 
 	\item Add a volume control by coupling the measure from the potentiometer (representing the volume) with your synthesizer.
 \end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=12cm]{linker-settings.png}
+\caption{To compile with the \texttt{math.h} library, add ``m" in the ``Additional Libraries" field. This windows is found under \texttt{Project > Build Settings...}.}
+\label{fig:linker}
+\end{figure}
 
 
 
