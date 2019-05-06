@@ -50,7 +50,7 @@
 }
 
 
-\newdateformat{mydate}{v2.0.0}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{v2.0.1}%hack pour remplacer \THEYEAR
 
 
 \newboolean{corrige}
@@ -230,7 +230,7 @@ A function allowing to receive the pressed key will be provided (keypad.c and ke
 
 \begin{itemize}
 	\item Figure~\ref{fig:keyboard_matrix} shows the electronic diagram of a matrix keyboard. Moreover, a function allowing you to read the pressed key is given on the server (keypad.c and keypad.h files). If the key is effectively pressed, it sends the corresponding character (‘0’ to ‘9’, ‘*’ or ‘\#’).	Otherwise, it sends the value ‘z’. Using the diagram of the matrix keyboard and the code provided, explain how this matrix keyboard works. Are the columns inputs or outputs? Are the rows inputs or outputs? 
-	\item In your topDesign.cysch file, instantiate COL0, COL1, COL2, ROW0, ROW1, ROW2 and ROW3 as inputs/outputs appropriately. The inputs should be Digital inputs with ``Resistive pull-up'', the outputs should be digital output with ``Open Drain, Drives low''. 
+	\item In your topDesign.cysch file, instantiate COL1, COL2, COL3, ROW0, ROW1, ROW2 and ROW3 as inputs/outputs appropriately. The inputs should be Digital inputs with ``Resistive pull-up'', the outputs should be digital output with ``Open Drain, Drives low''. 
 	\item Add the keypad.h file to the ``Header Files'' folder, and the keypad.c file to the ``Source Files'' folder. Finally, add the following line at the beginning of your firmware code (i.e. the main.c file): 
 \begin{lstlisting}[style=CStyle]
 #include "keypad.h"	
