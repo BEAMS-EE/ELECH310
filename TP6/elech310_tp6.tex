@@ -61,7 +61,7 @@
 %Numero du TP :
 \def \tpnumber {TP 6 }
 
-\newcommand{\version}{v1.0.0}
+\newcommand{\version}{v1.0.1}
 
 
 % ########     #####      #####    ##         #########     ###     ##      ##  
@@ -218,7 +218,7 @@ pdfsubject={}
 				\multirow{3}{*}{7} & \cellcolor{red!25}2-8; & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \multirow{3}{*}{x} & \cellcolor{gray!20} &  \cellcolor{gray!20}&  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20}\\
 				 & \cellcolor{red!25}4-10 &  & & &  &  & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20} & \cellcolor{gray!20}\\
 				 & \cellcolor{red!25}3-5 & & & &  &  & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20} &\cellcolor{gray!20} \\ \hline
-				\multirow{3}{*}{8} & \multirow{3}{*}{x}  & \cellcolor{red!25}1-7; & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \cellcolor{red!25}7-11; & \multirow{3}{*}{x}  & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20}\\
+				\multirow{3}{*}{8} & \multirow{3}{*}{x}  & \cellcolor{red!25}1-7; & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \multirow{3}{*}{x}  & \cellcolor{red!25}1-11; & \multirow{3}{*}{x}  & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20} & \cellcolor{gray!20}\\
 				& x & \cellcolor{red!25}3-9 & & & & \cellcolor{red!25}3-5; & & \cellcolor{gray!20} &\cellcolor{gray!20}  & \cellcolor{gray!20} & \cellcolor{gray!20}\\
 				&  & \cellcolor{red!25} & & & & \cellcolor{red!25}4-10 & &  \cellcolor{gray!20}& \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20}\\ \hline
 				\multirow{2}{*}{9} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{red!25}6-8; & \multirow{2}{*}{x} & \cellcolor{green!25}7-11; & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \multirow{2}{*}{x} & \cellcolor{gray!20} &  \cellcolor{gray!20}& \cellcolor{gray!20}\\
@@ -254,8 +254,8 @@ pdfsubject={}
 	\fr{Si on permet ou non l'équivalence de lignes dont la sortie est différente, montrer les deux automates différents (équations logiques et logigrammes) auxquels on parviendrait dans le cas de la table non complètement réduite suivante~:}
 	\en{From this Huffman table, show the two possible automatons if we allow to merge lines for which the output is
 	\begin{enumerate}
-		\item different
 		\item the same
+		\item different
 	\end{enumerate}
 	}
 
@@ -349,7 +349,7 @@ pdfsubject={}
 
 		Forts de ces considérations, nous pouvons dresser la table d'équivalence suivante~:}
 		\en{If we allow merging states with different outputs, we are working with a Mealy machine.
-		However, we need to keep in mind that with still cannot merge stable states with different outputs.
+		However, we need to keep in mind that we still cannot merge stable states with different outputs.
 		For example, let's take a look at states $1$ and $4$. For the input $ab = 00$, both future states are stable and their output is $0$ and $1$. Since the output are different for stable future states, we cannot merge $1$ and $4$.
 		On the other hand, if we consider states $2$ and $3$ for the input $ab = 11$, both futur states are stable, but with the same output.
 
@@ -514,10 +514,11 @@ pdfsubject={}
 				\color{orange}\put(3.1,0.2){\dashbox{0.2}(0.7,1.7){}}%
 				}
 
-				\askmapiv{$Y_2 = y_2\overline{ab} + y_1\overline{a}b + y_2ab + \overline{y_1}a$}{a b $y_1$ $y_2$}{}{010100-1-1001101}{%
+				\askmapiv{$Y_2 = y_2\overline{ab} + y_1y_2b + \overline{y_1}a$}{a b $y_1$ $y_2$}{}{010100-1-1001101}{%
 				\color{red}\put(0.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
-				\color{green}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
-				\color{blue}\put(2.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
+				\color{blue}\put(1.1,1.1){\dashbox{0.1}(1.8,0.8){}}%
+				%\color{green}\put(1.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
+				%\color{blue}\put(2.1,1.1){\dashbox{0.1}(0.8,1.8){}}%
 				\color{orange}\put(2.2,2.1){\dashbox{0.2}(1.7,1.8){}}%
 				}
 			\end{center}
@@ -792,7 +793,7 @@ pdfsubject={}
 			\fr{Les k-maps et fonctions d'excitation sont maintenant immédiates~:}
 			\en{Hence the K-maps and excitation functions:}
 			\begin{center}
-			\askmapiv{$D_1 = y_1\overline{a} + y_2\overline{a}b$}{a b $y_1$ $y_2$}{}{00110101-0--0000}{%
+			\askmapiv{$D_1 = y_1\overline{b} + y_2\overline{a}b$}{a b $y_1$ $y_2$}{}{00110101-0--0000}{%
 			\color{red}\put(0.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
 			\color{red}\put(3.1,0.1){\dashbox{0.1}(0.8,1.8){}}%
 			\color{green}\put(1.1,1.1){\dashbox{0.2}(0.8,1.8){}}%
