@@ -59,7 +59,7 @@
 %Numero du TP :
 \def \tpnumber {TP 4 }
 
-\newcommand{\version}{v1.0.0}
+\newcommand{\version}{v1.0.1}
 
 
 % ########     #####      #####    ##         #########     ###     ##      ##  
@@ -401,13 +401,13 @@ pdfsubject={}
 			\end{align*}
 
 			\begin{center}
-				\begin{tabular}{|c|c|c|c|c|c|} \hline
-				& \multicolumn{4}{c|}{$ab$} & \\ \hline
-				$Y_1Y_2$ & 00 & 01 & 11 & 10 & $Z$ \\ \hline
-				00 & 00 & 00 & 10 & 10 & 0 \\ \hline
-				01 & 11 & 11 & 00 & 00 & 0 \\ \hline
-				11 & 11 & 11 & 11 & 11 & 0 \\ \hline
-				10 & 11 & 11 & 10 & 10 & 1 \\ \hline
+				\begin{tabular}{|c|c|c|c|} \hline
+				& \multicolumn{2}{c|}{$a$} & \\ \hline
+				$Y_1Y_2$ & 0 & 1 &  $Z$ \\ \hline
+				00 & 00 & 10 & 0 \\ \hline
+				01 & 11 & 00 & 0 \\ \hline
+				11 & 11 & 11 & 0 \\ \hline
+				10 & 11 & 10 & 1 \\ \hline
 				\end{tabular}
 			\end{center}
 
@@ -420,13 +420,13 @@ pdfsubject={}
 			  \node[state]         (D) [below of=A] {$10$\\ Z=1};
 			  \node[state]         (C) [below of=B] {$11$\\ Z=0};
 
-			  \path (A) edge [bend right] node {10,11} (D)
-						edge [loop left]  node {00,01} (A)
-			        (B) edge [bend right] node {11,10} (A)
-			        	edge [bend left]  node {00, 01} (C)
-			        (C) edge [loop right]  node {00, 01, 11, 10} (D)
-			        (D) edge [loop left]  node {00, 01} (D)
-			            edge [bend right]  node {11, 10} (C);
+			  \path (A) edge [bend right] node {1} (D)
+						edge [loop left]  node {0} (A)
+			        (B) edge [bend right] node {1} (A)
+			        	edge [bend left]  node {0} (C)
+			        (C) edge [loop right]  node {0, 1} (D)
+			        (D) edge [loop left]  node {1} (D)
+			            edge [bend right]  node {0} (C);
 			\end{tikzpicture}
 			\end{center}
 		}
@@ -487,7 +487,7 @@ pdfsubject={}
 
 		  \path	(A)	edge	[loop left]		node	{00}		(A)
 		  			edge	[bend left]		node	{$ab = $10}		(B)
-		  			edge					node	{11, 10}	(I)
+		  			edge					node	{11, 0}	(I)
 		  		(B)	edge	[loop above]	node	{10}		(B)
 		  			edge	[bend left]		node	{00}		(C)
 		  			edge					node	{11, 01}	(I)
