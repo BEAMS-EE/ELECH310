@@ -73,7 +73,7 @@ To use the LCD screen, follow the following steps:
 \newpage
 \subsection{Keyboard}
 
-A small $4\times 3$ keyboard is provided, that can be connected directly to the bottom of the extension board\footnote{there are 8 pins to the bottom of the extension board to allow for $4\times 4$ keyboards. Please use the seven leftmost pins for a $4\times 3$ keyboard. }. Functions that allow to initialize the keyboard and to receive the pressed key are provided (i.e. the \texttt{keyboard.c} and \texttt{keyboard.h} files).  
+A small $4\times 3$ keyboard is provided, that can be connected directly to the bottom of the extension board\footnote{there are 8 pins to the bottom of the extension board to allow for $4\times 4$ keyboards. Please use the seven leftmost pins for a $4\times 3$ keyboard. }. Functions that allow to initialize the keyboard and to receive the pressed key are provided (i.e. the \texttt{keypad.c} and \texttt{keypad.h} files).
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=2.5in]{keyboard.png}
@@ -82,9 +82,9 @@ A small $4\times 3$ keyboard is provided, that can be connected directly to the 
 \end{figure}
 The following short assignment will help you in using the keyboard. 
 \begin{itemize}
-	\item Figure~\ref{fig:keyboard} shows the electronic circuit of a matrix keyboard. Moreover, functions allowing you to read the pressed key are provided (\texttt{keyboard.c} and \texttt{keyboard.h} files). For these functions to work, the inputs ROW0, ROW1, ROW2 and ROW3 must be configured as ``Resistive pull-up'', effectively adding the green components in Figure~\ref{fig:keyboard} to the circuit. When the key is effectively pressed, the function \texttt{keypadScan()} returns the corresponding character (‘0’ to ‘9’, ‘*’ or ‘\#’).	Otherwise, it returns the value ‘z’. Using the electronic circuit of the matrix keyboard and the code provided, understand how this matrix keyboard works. 
-	\item In your TopDesign.cysch file, instantiate COL0, COL1, COL2 as digital output with ``Open Drain, Drives low''. Instantiate ROW0, ROW1, ROW2 and ROW3 as Digital inputs with ``Resistive pull-up''. 
-	\item Add the \texttt{keypad.h} file to the ``Header Hiles'' folder, and the \texttt{keypad.c} file to the ``Source Files'' folder. Finally, add the following line at the beginning of your firmware code (i.e. the main.c file): 
+	\item Figure~\ref{fig:keyboard} shows the electronic circuit of a matrix keyboard. Moreover, functions allowing you to read the pressed key are provided (\texttt{keypad.c} and \texttt{keypad.h} files). For these functions to work, the inputs ROW0, ROW1, ROW2 and ROW3 must be configured as ``Resistive pull-up'', effectively adding the green components in Figure~\ref{fig:keyboard} to the circuit. When the key is effectively pressed, the function \texttt{keypadScan()} returns the corresponding character (‘0’ to ‘9’, ‘*’ or ‘\#’).	Otherwise, it returns the value ‘z’. Using the electronic circuit of the matrix keyboard and the code provided, understand how this matrix keyboard works.
+    \item In your TopDesign.cysch file, instantiate COL1, COL2, COL3 as digital output with ``Open Drain, Drives low''. Instantiate ROW0, ROW1, ROW2 and ROW3 as Digital inputs with ``Resistive pull-up'' (make sure the ``HW connection'' box is unticked).
+	\item Add the \texttt{keypad.h} file and the \texttt{keypad.c} files to the folder where your \texttt{main.c} is located (i.e. Documents/PSoC~Creator/MyProject/MyProject.cysdn/). In your PSoC workspace, you should add the \texttt{keypad.c} file to the ``Source Files'' folder, and the  \texttt{keypad.h} file to the ``Header Hiles'' folder. Finally, add the following line at the beginning of your firmware code (i.e. the main.c file):
 \begin{lstlisting}[style=customc]
 #include "keypad.h"	
 \end{lstlisting}
