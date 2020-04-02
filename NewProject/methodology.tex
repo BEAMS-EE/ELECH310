@@ -209,6 +209,7 @@ In our case, we will simply generate a sine wave at adjustable frequency~: the p
     To do so, you must~:
 	\begin{itemize}
 		\item include the file math.h in the header~;
+		\item add the math libray to the linker, right click on the project > Build settings... > ARM GCC > Linker > General > Additional Libraries and add "m"~;
 		\item call function \texttt{sin()}, that takes as argument a floating number representing the angle (in rad) and that also returns a floating number.
 	\end{itemize}
 	\item Program a timer so that a sample of the sine wave is processed every 50~$\mu$s
