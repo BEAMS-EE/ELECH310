@@ -73,8 +73,27 @@ As a bonus, the following elements can be implemented:
 
 
 
+\subsection{One-dimensional gimbal}
 
+The aim of this project is to realize a one-dimensional gimbal, i.e. a system that will maintain a platform horizontal, even if the whole object (in this case the PSoC board) is rotated. To maintain the horizontal board horizontally, the servo motor (attached to the PSoC board) will be used to rotate the horizontal board with respect to the PSoC board. Rotations will be detected using a ADXL335Z 3-axes accelerometer, which can be attached to the PSoC board or to the horizontal board. Note that an accelerometer will measure the earth's vertical gravitation vector and project it along it's 3 axes, which can be used as a measure of orientation of the accelerometer. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5in]{gimbal.png}
+	\caption{Schematic representation of the 1-D gimbal system. The brown platform should remain horizontal, even if the PSoC is rotated. }
+	\label{fig:gimbal}
+\end{figure}
+The gimbal system will have two modes. In the first mode (the testing mode), the horizontal platform can be rotated to the left or to the right (this is mainly for testing purposes). In the second mode (the gimbal mode), the gimbal functionality should be activated, and the platform should remain horizontal. 
 
+The inputs and outputs should be configured as follows. 
+\begin{itemize}
+	\item \textbf{SW1: } When pressing SW1, we should switch between testing mode and gimbal mode. This should also be reflected with the LEDs. 
+	\item \textbf{LED1-LED4: }When in testing mode, the LEDs should turn off. In gimbal mode, the LEDs should be on. 
+	\item \textbf{Pot: }When in testing mode, turning the potentiometer to the left should rotate the platform to the left, turning the potentiometer to the right should rotate the platform to the right. 
+	\item \textbf{Keyboard: }Pressint the ``1'' should switch between testing mode and gimball mode. When in testing mode, pressing ``2'' should rotate the platform to the left, pressing ``3'' should rotate the platform to the right. 
+	\item \textbf{Audio out: } The audio output should generate a sine tone whose frequency is proportional to the tilting of the platform. 
+	\item \textbf{LCD screen: } The LCD screen should print the value that is captured with the accelerometer (and tentatively convert it to orientation). 
+	\item \textbf{ADC: } the ADC will be used to measure the acceleration from the ADXL335Z evaluation board. 
+\end{itemize}
 
 
 
