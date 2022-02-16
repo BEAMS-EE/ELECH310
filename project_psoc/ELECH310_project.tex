@@ -34,8 +34,12 @@
 \usepackage[normalem]{ulem}
 \usepackage{aeguill} %guillemets
 \usepackage[]{circuitikz}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
 
-\newdateformat{mydate}{2019--2020}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{2020--2021}%hack pour remplacer \THEYEAR
 
 \renewcommand{\marginpar}[1]{} %surcharge pour /marginpar
 
@@ -131,8 +135,7 @@
 		
 \title{
 Digital Electronics ELEC-H-310\\
-Project specifications\\
-Design of a distress beacon
+Introduction labs and project specifications
 }
 \date{}
 		
@@ -143,11 +146,11 @@ Design of a distress beacon
 
 \input{introduction}
 \newpage
-\input{project_specifications}
-\newpage
 \input{software}
 \newpage
 \input{methodology}
+\newpage
+\input{project_specifications}
 \newpage
 
 \appendix

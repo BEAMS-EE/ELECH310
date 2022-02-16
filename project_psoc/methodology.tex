@@ -173,11 +173,11 @@ In this short assignment, we will measure luminous intensity using a photoresist
 \newpage
 \subsection{Timers}
 
-A timer is a hardware element that is connected directly to the microcontroller oscillator, and is able to provide precise time management for the microcontroller. The \texttt{CyDelay()} function allows to put the microcontroller to sleep for precise time durations, but the programmer cannot know the execution time of ohter instructions. Hence, precise time managmenet is impossible to do without timers 
+A timer is a hardware element that is connected directly to the microcontroller oscillator, and is able to provide precise time management for the microcontroller. The \texttt{CyDelay()} function allows to put the microcontroller to sleep for precise time durations, but the programmer cannot know the execution time of other instructions. Hence, precise time management is impossible to do without timers. 
 \\
 In the following short assignment, you are asked to make the LEDs blink at a given frequency. To do so, you will need a timer. This type of peripheral has a 8/16/24/32-bits register that is decremented at each clock cycle. When the value of this register reaches 0, the counter goes back to the specified period value and starts decrementing again. At the same time, a specific bit named \texttt{TC} (in the \texttt{Timer\_Status} register) goes to 1 to warn of overflow (cf. datasheet of timer). As a first step, you will write a program allowing to make the LED blink at a frequency of 1~kHz.
 \begin{itemize}
-	\item Instantiate a 16-bit Timer in the TopDesign.cysch file (use the ``Fixed Function'' implementation). Set the period to cause on overflow at a frequency of 1~kHz. What is the largest period of the timer? As a reminder, the highest clock rate available in a PSoC system is a BUS\_CLK at a rate of 24~MHz.
+	\item Instantiate a 16-bit Timer in the TopDesign.cysch file (use the ``Fixed Function'' implementation). Set the period to cause an overflow at a frequency of 1~kHz. What is the largest period of the timer? As a reminder, the highest clock rate available in a PSoC system is a BUS\_CLK at a rate of 24~MHz.
 	\item Add the launching of the timer in your program (use the Datasheet Application Programming Interface to find the appropriate function). 
 	\item In the main loop of your program~:
 	\begin{itemize}
@@ -209,7 +209,7 @@ In our case, we will simply generate a sine wave at adjustable frequency~: the p
     To do so, you must~:
 	\begin{itemize}
 		\item include the file math.h in the header~;
-		\item add the math libray to the linker, right click on the project > Build settings... > ARM GCC > Linker > General > Additional Libraries and add "m"~;
+		\item add the math library to the linker, right click on the project > Build settings... > ARM GCC > Linker > General > Additional Libraries and add "m"~;
 		\item call function \texttt{sin()}, that takes as argument a floating number representing the angle (in rad) and that also returns a floating number.
 	\end{itemize}
 	\item Program a timer so that a sample of the sine wave is processed every 50~$\mu$s
@@ -285,7 +285,7 @@ The serial bus allows to send and receive data from/to the microcontroller to/Fr
 \end{itemize}
 
 \subsubsection{Sending data to the PC}
-To send and receive the data on the PC side, use a serial communications software (such as ``Termite 3.4'', that you can download on \url{https://www.compuphase.com/software_termite.htm}). This software allows to connect an USB-to-serial converter to the PC, and exchange data with an UART device. Make sure the UART communication parameters match that of the PSoC UART component. To determine the right COM port, connect the UART-to-USB converter tot he PC and do the following : 
+To send and receive the data on the PC side, use a serial communications software (such as ``Termite 3.4'', that you can download on \url{https://www.compuphase.com/software_termite.htm}). This software allows to connect an USB-to-serial converter to the PC, and exchange data with an UART device. Make sure the UART communication parameters match that of the PSoC UART component. To determine the right COM port, connect the UART-to-USB converter to the PC and do the following : 
 \begin{itemize}
 \item Wait for Windows to install the drivers
 \item Open the Device Manager by pressing the Windows Key $+$ R. Type “devmgmt.msc” and press Enter.
